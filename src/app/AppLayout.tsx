@@ -3,7 +3,7 @@ import { LAST_FROST_BY_ZONE } from "../data/frostDates";
 import { ZonePicker } from "../components/ZonePicker";
 import { getZoneRange, type USDAZone } from "../lib/zones";
 import appIcon from "../data/Sprout_whitebackground.png";
-import wordmark from "../data/SowSimple_wordmark_cropped.png";
+import wordmark from "../data/SowSimple_wordmark_transparent.png";
 
 export type AppOutletContext = {
   selectedZone: USDAZone;
