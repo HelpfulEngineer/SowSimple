@@ -1,0 +1,1739 @@
+[
+  {
+    "id": "tomato",
+    "name": "Tomato",
+    "category": "vegetable",
+    "summary": "A warm-season crop usually started indoors and transplanted after frost danger has passed.",
+    "spacing": {
+      "minInches": 18,
+      "maxInches": 24
+    },
+    "pruning": {
+      "shortGuide": "Remove lower leaves for airflow. Prune suckers on indeterminate types if you want tidier vines and larger fruit."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 3
+        },
+        "notes": "Wait until nights are reliably mild before transplanting."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "basil",
+        "name": "Basil",
+        "reason": "A classic garden pairing that makes efficient use of space and is beloved by gardeners.",
+        "confidence": "traditional"
+      },
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "Widely planted nearby as part of general pest-management strategies.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "onion",
+        "name": "Onion",
+        "reason": "Can fit well nearby and helps diversify bed planting.",
+        "confidence": "traditional"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 70,
+      "daysToFirstHarvestMax": 90,
+      "windowLengthDaysMin": 30,
+      "windowLengthDaysMax": 75,
+      "notes": "Harvest regularly once fruit colors and ripens."
+    },
+    "seasonalityNotes": [
+      "Warm-season crop",
+      "Sensitive to frost"
+    ]
+  },
+  {
+    "id": "pepper",
+    "name": "Pepper",
+    "category": "vegetable",
+    "summary": "A warm-season crop that prefers heat and is commonly started indoors before transplanting.",
+    "spacing": {
+      "minInches": 18,
+      "maxInches": 24
+    },
+    "pruning": {
+      "shortGuide": "Remove damaged lower leaves and lightly shape only if needed. Most home gardeners do best with minimal pruning."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksBeforeLastFrost": 8
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 2,
+          "endWeeksAfterLastFrost": 4
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksBeforeLastFrost": 8
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 2,
+          "endWeeksAfterLastFrost": 3
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "basil",
+        "name": "Basil",
+        "reason": "A popular pairing in kitchen gardens and a nice use of nearby space.",
+        "confidence": "traditional"
+      },
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "Commonly used near peppers as part of companion planting mixes.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "onion",
+        "name": "Onion",
+        "reason": "Pairs well in many bed layouts and helps diversify the planting area.",
+        "confidence": "traditional"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 65,
+      "daysToFirstHarvestMax": 90,
+      "windowLengthDaysMin": 30,
+      "windowLengthDaysMax": 60,
+      "notes": "Harvest green or allow fruit to fully color for sweeter flavor."
+    },
+    "seasonalityNotes": [
+      "Warm-season crop",
+      "Heat loving"
+    ]
+  },
+  {
+    "id": "cucumber",
+    "name": "Cucumber",
+    "category": "vegetable",
+    "summary": "A warm-season vine best direct sown after frost once soil has warmed, though short indoor starts are possible.",
+    "spacing": {
+      "minInches": 8,
+      "maxInches": 12
+    },
+    "pruning": {
+      "shortGuide": "Trim damaged leaves and lightly manage vines if they sprawl too aggressively. Trellised plants may be easier to maintain."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 4,
+          "endWeeksBeforeLastFrost": 3
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 1
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Direct sow is preferred. If starting indoors, do so no earlier than four weeks before last frost and transplant carefully."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 4,
+          "endWeeksBeforeLastFrost": 3
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 1
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Direct sow is preferred. If starting indoors, do so no earlier than four weeks before last frost and transplant carefully."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 4,
+          "endWeeksBeforeLastFrost": 3
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 1
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Direct sow is preferred. If starting indoors, do so no earlier than four weeks before last frost and transplant carefully."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 4,
+          "endWeeksBeforeLastFrost": 3
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 1
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Direct sow is preferred. If starting indoors, do so no earlier than four weeks before last frost and transplant carefully."
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "dill",
+        "name": "Dill",
+        "reason": "Often planted nearby to support beneficial insect activity.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "peas",
+        "name": "Peas",
+        "reason": "Can complement mixed-bed layouts early in the season.",
+        "confidence": "traditional"
+      },
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "A common all-purpose garden companion with a good reputation.",
+        "confidence": "traditional"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 50,
+      "daysToFirstHarvestMax": 70,
+      "windowLengthDaysMin": 21,
+      "windowLengthDaysMax": 45,
+      "notes": "Pick frequently for better production."
+    },
+    "seasonalityNotes": [
+      "Warm-season crop",
+      "Often benefits from trellising"
+    ]
+  },
+  {
+    "id": "carrot",
+    "name": "Carrot",
+    "category": "vegetable",
+    "summary": "A cool-season root crop best direct sown into loose soil.",
+    "spacing": {
+      "minInches": 2,
+      "maxInches": 4
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Thin seedlings early so roots have space to size up properly."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 8
+        },
+        "notes": "Direct sow in early spring; storage types can be sown again in mid July."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 12
+        },
+        "notes": "Direct sow in early spring; storage types can be sown again in mid July."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 16
+        },
+        "notes": "Direct sow in early spring; storage types can be sown again in mid July."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 23
+        },
+        "notes": "Direct sow in early spring; storage types can be sown again in mid July."
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "onion",
+        "name": "Onion",
+        "reason": "A classic pairing in kitchen gardens with a long-standing reputation.",
+        "confidence": "traditional"
+      },
+      {
+        "plantId": "lettuce",
+        "name": "Lettuce",
+        "reason": "Makes efficient use of nearby soil space and similar cool-season timing.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "peas",
+        "name": "Peas",
+        "reason": "A nice cool-season companion in mixed spring beds.",
+        "confidence": "traditional"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 55,
+      "daysToFirstHarvestMax": 80,
+      "windowLengthDaysMin": 14,
+      "windowLengthDaysMax": 30,
+      "notes": "Harvest when roots reach the size you prefer."
+    },
+    "seasonalityNotes": [
+      "Cool-season crop",
+      "Direct sow only"
+    ]
+  },
+  {
+    "id": "lettuce",
+    "name": "Lettuce",
+    "category": "vegetable",
+    "summary": "A cool-season leafy crop that grows quickly and is best grown before hot weather arrives.",
+    "spacing": {
+      "minInches": 6,
+      "maxInches": 12
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Thin crowded seedlings and harvest outer leaves regularly on loose-leaf types."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 2,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 2,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Aim to mature lettuce before hot weather; late-summer sowings are often better for fall harvest."
+      },
+      {
+        "zoneRange": "3-4",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 10,
+          "endWeeksAfterLastFrost": 12
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 2,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 3,
+          "endWeeksAfterLastFrost": 3
+        },
+        "notes": "Aim to mature lettuce before hot weather; late-summer sowings are often better for fall harvest."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 14,
+          "endWeeksAfterLastFrost": 18
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 4,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Aim to mature lettuce before hot weather; late-summer sowings are often better for fall harvest."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 18,
+          "endWeeksAfterLastFrost": 24
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Aim to mature lettuce before hot weather; late-summer sowings are often better for fall harvest."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 24,
+          "endWeeksAfterLastFrost": 36
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "carrot",
+        "name": "Carrot",
+        "reason": "Shares cool-season timing and works well in mixed beds.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "green-onion",
+        "name": "Green Onion",
+        "reason": "A tidy companion for mixed planting layouts.",
+        "confidence": "traditional"
+      },
+      {
+        "plantId": "radish",
+        "name": "Radish",
+        "reason": "Another fast cool-season crop that fits neatly into spring sowing plans.",
+        "confidence": "practical"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 30,
+      "daysToFirstHarvestMax": 60,
+      "windowLengthDaysMin": 14,
+      "windowLengthDaysMax": 35,
+      "notes": "Leaf harvest can start earlier than full-head harvest."
+    },
+    "seasonalityNotes": [
+      "Cool-season crop",
+      "Can bolt in heat"
+    ]
+  },
+  {
+    "id": "basil",
+    "name": "Basil",
+    "category": "herb",
+    "summary": "A tender warm-season herb that thrives in summer heat and regular harvesting.",
+    "spacing": {
+      "minInches": 10,
+      "maxInches": 12
+    },
+    "pruning": {
+      "shortGuide": "Pinch above leaf sets often to encourage branching and delay flowering."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 3
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 3
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "tomato",
+        "name": "Tomato",
+        "reason": "The classic kitchen-garden duo. Gardeners absolutely adore this pairing.",
+        "confidence": "traditional"
+      },
+      {
+        "plantId": "pepper",
+        "name": "Pepper",
+        "reason": "Similar warmth needs make this a comfortable bedmate.",
+        "confidence": "practical"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 30,
+      "daysToFirstHarvestMax": 50,
+      "windowLengthDaysMin": 30,
+      "windowLengthDaysMax": 90,
+      "notes": "Frequent cutting improves continued leaf production."
+    },
+    "seasonalityNotes": [
+      "Warm-season herb",
+      "Sensitive to cold"
+    ]
+  },
+  {
+    "id": "zucchini",
+    "name": "Zucchini",
+    "category": "vegetable",
+    "summary": "Warm-season summer squash grown for prolific tender fruits.",
+    "spacing": {
+      "minInches": 24,
+      "maxInches": 36
+    },
+    "pruning": {
+      "shortGuide": "Remove damaged lower leaves and harvest often to keep plants productive."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 1
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 1
+        }
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 45,
+      "daysToFirstHarvestMax": 60,
+      "windowLengthDaysMin": 21,
+      "windowLengthDaysMax": 45
+    },
+    "seasonalityNotes": [
+      "Warm-season crop"
+    ]
+  },
+  {
+    "id": "summer-squash",
+    "name": "Summer Squash",
+    "category": "vegetable",
+    "summary": "A warm-season squash category including yellow squash and similar fast producers.",
+    "spacing": {
+      "minInches": 24,
+      "maxInches": 36
+    },
+    "pruning": {
+      "shortGuide": "Remove damaged leaves as needed and harvest young fruit frequently."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Warm-season crop; Johnny's also supports later sowings in longer seasons."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Warm-season crop; Johnny's also supports later sowings in longer seasons."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Warm-season crop; Johnny's also supports later sowings in longer seasons."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 1
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 1
+        },
+        "notes": "Warm-season crop; Johnny's also supports later sowings in longer seasons."
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 45,
+      "daysToFirstHarvestMax": 60,
+      "windowLengthDaysMin": 21,
+      "windowLengthDaysMax": 45
+    },
+    "seasonalityNotes": [
+      "Warm-season crop"
+    ]
+  },
+  {
+    "id": "potato",
+    "name": "Potato",
+    "category": "vegetable",
+    "summary": "An early-season tuber crop grown from seed potatoes and usually planted before or near the last frost date.",
+    "spacing": {
+      "minInches": 12,
+      "maxInches": 15
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Hill soil around stems as plants grow."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 1
+        },
+        "notes": "Plant in early spring as soon as the garden can be worked."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 1
+        },
+        "notes": "Plant in early spring as soon as the garden can be worked."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 1
+        },
+        "notes": "Plant in early spring as soon as the garden can be worked."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 1
+        },
+        "notes": "Plant in early spring as soon as the garden can be worked."
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 70,
+      "daysToFirstHarvestMax": 110,
+      "windowLengthDaysMin": 10,
+      "windowLengthDaysMax": 21
+    },
+    "seasonalityNotes": [
+      "Early-season crop"
+    ]
+  },
+  {
+    "id": "spinach",
+    "name": "Spinach",
+    "category": "vegetable",
+    "summary": "A fast cool-season leafy crop for spring and late-summer sowing.",
+    "spacing": {
+      "minInches": 4,
+      "maxInches": 6
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Harvest outer leaves or cut whole plants when mature."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 1
+        }
+      },
+      {
+        "zoneRange": "3-4",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 10,
+          "endWeeksAfterLastFrost": 12
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 14,
+          "endWeeksAfterLastFrost": 18
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 20,
+          "endWeeksAfterLastFrost": 26
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 28,
+          "endWeeksAfterLastFrost": 38
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 35,
+      "daysToFirstHarvestMax": 50,
+      "windowLengthDaysMin": 10,
+      "windowLengthDaysMax": 25
+    },
+    "seasonalityNotes": [
+      "Cool-season crop"
+    ]
+  },
+  {
+    "id": "kale",
+    "name": "Kale",
+    "category": "vegetable",
+    "summary": "A hardy leafy green for long cool-season harvests.",
+    "spacing": {
+      "minInches": 12,
+      "maxInches": 18
+    },
+    "pruning": {
+      "shortGuide": "Harvest lower outer leaves first and keep the center growing."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 6
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 10
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 14
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 18
+        }
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 50,
+      "daysToFirstHarvestMax": 70,
+      "windowLengthDaysMin": 30,
+      "windowLengthDaysMax": 75
+    },
+    "seasonalityNotes": [
+      "Cool-season crop"
+    ]
+  },
+  {
+    "id": "parsley",
+    "name": "Parsley",
+    "category": "herb",
+    "summary": "A slow-germinating herb that can be direct sown in cool spring weather.",
+    "spacing": {
+      "minInches": 8,
+      "maxInches": 10
+    },
+    "pruning": {
+      "shortGuide": "Cut outer stems from the base to keep plants producing."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 0
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 4
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 6
+        }
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 70,
+      "daysToFirstHarvestMax": 90,
+      "windowLengthDaysMin": 45,
+      "windowLengthDaysMax": 120
+    },
+    "seasonalityNotes": [
+      "Cool-to-warm season herb"
+    ]
+  },
+  {
+    "id": "cilantro",
+    "name": "Cilantro",
+    "category": "herb",
+    "summary": "A quick-growing herb that prefers cooler weather and bolts in heat.",
+    "spacing": {
+      "minInches": 6,
+      "maxInches": 8
+    },
+    "pruning": {
+      "shortGuide": "Snip outer stems often, but expect plants to bolt in warm weather."
+    },
+    "plantingWindows": [],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 25,
+      "daysToFirstHarvestMax": 45,
+      "windowLengthDaysMin": 10,
+      "windowLengthDaysMax": 25
+    },
+    "seasonalityNotes": [
+      "Cool-season herb"
+    ]
+  },
+  {
+    "id": "dill",
+    "name": "Dill",
+    "category": "herb",
+    "summary": "A feathery herb popular in vegetable beds and pollinator-friendly plantings.",
+    "spacing": {
+      "minInches": 8,
+      "maxInches": 12
+    },
+    "pruning": {
+      "shortGuide": "Snip leaves as needed and allow some plants to flower if you want beneficial insects around."
+    },
+    "plantingWindows": [],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 40,
+      "daysToFirstHarvestMax": 60,
+      "windowLengthDaysMin": 20,
+      "windowLengthDaysMax": 45
+    },
+    "seasonalityNotes": [
+      "Cool-to-warm season herb"
+    ]
+  },
+  {
+    "id": "onion",
+    "name": "Onion",
+    "category": "vegetable",
+    "summary": "A cool-season allium grown from seed, sets, or transplants.",
+    "spacing": {
+      "minInches": 4,
+      "maxInches": 6
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Keep beds weeded and allow tops to mature naturally."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 15,
+          "endWeeksBeforeLastFrost": 13
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 11,
+          "endWeeksBeforeLastFrost": 9
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 90,
+      "daysToFirstHarvestMax": 120,
+      "windowLengthDaysMin": 10,
+      "windowLengthDaysMax": 21
+    },
+    "seasonalityNotes": [
+      "Cool-season start"
+    ]
+  },
+  {
+    "id": "green-onion",
+    "name": "Green Onion",
+    "category": "vegetable",
+    "summary": "A quick bunching onion that can be direct sown or transplanted from early spring into late summer.",
+    "spacing": {
+      "minInches": 2,
+      "maxInches": 4
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Harvest selectively or pull entire plants once sized."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 13
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 13
+        },
+        "notes": "Johnny's supports direct seeding or transplanting from early spring to late summer."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 17
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 17
+        },
+        "notes": "Johnny's supports direct seeding or transplanting from early spring to late summer."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 22
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 22
+        },
+        "notes": "Johnny's supports direct seeding or transplanting from early spring to late summer."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 30
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 30
+        },
+        "notes": "Johnny's supports direct seeding or transplanting from early spring to late summer."
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 50,
+      "daysToFirstHarvestMax": 65,
+      "windowLengthDaysMin": 14,
+      "windowLengthDaysMax": 35
+    },
+    "seasonalityNotes": [
+      "Cool-season friendly"
+    ]
+  },
+  {
+    "id": "garlic",
+    "name": "Garlic",
+    "category": "vegetable",
+    "summary": "A bulb crop usually planted in fall for harvest the following season.",
+    "spacing": {
+      "minInches": 4,
+      "maxInches": 6
+    },
+    "pruning": {
+      "shortGuide": "Remove flower stalks on hardneck garlic if you want larger bulbs."
+    },
+    "plantingWindows": [],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 240,
+      "daysToFirstHarvestMax": 320,
+      "windowLengthDaysMin": 7,
+      "windowLengthDaysMax": 14
+    },
+    "seasonalityNotes": [
+      "Usually fall planted"
+    ]
+  },
+  {
+    "id": "green-beans",
+    "name": "Green Beans",
+    "category": "vegetable",
+    "summary": "A warm-season crop grown for tender pods and usually direct sown after frost.",
+    "spacing": {
+      "minInches": 4,
+      "maxInches": 6
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Harvest frequently to keep plants producing."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 6
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 10
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 14
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 20
+        }
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 50,
+      "daysToFirstHarvestMax": 65,
+      "windowLengthDaysMin": 21,
+      "windowLengthDaysMax": 40
+    },
+    "seasonalityNotes": [
+      "Warm-season crop"
+    ]
+  },
+  {
+    "id": "peas",
+    "name": "Peas",
+    "category": "vegetable",
+    "summary": "A cool-season climber or bush crop planted early for sweet pods or peas.",
+    "spacing": {
+      "minInches": 2,
+      "maxInches": 4
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Provide support for vining types and harvest often."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 0
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 0
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 0
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 0
+        }
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 55,
+      "daysToFirstHarvestMax": 70,
+      "windowLengthDaysMin": 14,
+      "windowLengthDaysMax": 30
+    },
+    "seasonalityNotes": [
+      "Cool-season crop"
+    ]
+  },
+  {
+    "id": "radish",
+    "name": "Radish",
+    "category": "vegetable",
+    "summary": "A very fast cool-season root crop that can be sown in spring and again in late summer.",
+    "spacing": {
+      "minInches": 2,
+      "maxInches": 3
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Thin seedlings early for better root sizing."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 1
+        }
+      },
+      {
+        "zoneRange": "3-4",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 10,
+          "endWeeksAfterLastFrost": 12
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 3
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 14,
+          "endWeeksAfterLastFrost": 18
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 4
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 20,
+          "endWeeksAfterLastFrost": 26
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 6
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 28,
+          "endWeeksAfterLastFrost": 38
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 22,
+      "daysToFirstHarvestMax": 35,
+      "windowLengthDaysMin": 7,
+      "windowLengthDaysMax": 14
+    },
+    "seasonalityNotes": [
+      "Cool-season crop"
+    ]
+  },
+  {
+    "id": "beet",
+    "name": "Beet",
+    "category": "vegetable",
+    "summary": "A cool-season root crop grown for both roots and edible greens.",
+    "spacing": {
+      "minInches": 3,
+      "maxInches": 4
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Thin seedlings and harvest some greens if desired."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 3
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 5
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 6
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 8
+        }
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 50,
+      "daysToFirstHarvestMax": 70,
+      "windowLengthDaysMin": 14,
+      "windowLengthDaysMax": 25
+    },
+    "seasonalityNotes": [
+      "Cool-season crop"
+    ]
+  },
+  {
+    "id": "broccoli",
+    "name": "Broccoli",
+    "category": "vegetable",
+    "summary": "A cool-season brassica usually started indoors for spring planting, with later plantings also common for fall harvest.",
+    "spacing": {
+      "minInches": 18,
+      "maxInches": 24
+    },
+    "pruning": {
+      "shortGuide": "Harvest the central head first; side shoots may continue after that."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 11,
+          "endWeeksBeforeLastFrost": 9
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksBeforeLastFrost": 8
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 12,
+          "endWeeksBeforeLastFrost": 10
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 14,
+          "endWeeksBeforeLastFrost": 12
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 60,
+      "daysToFirstHarvestMax": 90,
+      "windowLengthDaysMin": 10,
+      "windowLengthDaysMax": 25
+    },
+    "seasonalityNotes": [
+      "Cool-season crop"
+    ]
+  },
+  {
+    "id": "cabbage",
+    "name": "Cabbage",
+    "category": "vegetable",
+    "summary": "A cool-season brassica usually started indoors for spring planting, with early and later crops both common.",
+    "spacing": {
+      "minInches": 18,
+      "maxInches": 24
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Remove damaged outer leaves if necessary."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 11,
+          "endWeeksBeforeLastFrost": 9
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksBeforeLastFrost": 8
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 12,
+          "endWeeksBeforeLastFrost": 10
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 14,
+          "endWeeksBeforeLastFrost": 12
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 70,
+      "daysToFirstHarvestMax": 100,
+      "windowLengthDaysMin": 10,
+      "windowLengthDaysMax": 20
+    },
+    "seasonalityNotes": [
+      "Cool-season crop"
+    ]
+  },
+  {
+    "id": "lavender",
+    "name": "Lavender",
+    "category": "herb",
+    "summary": "A fragrant perennial herb loved for flowers, scent, and pollinator appeal.",
+    "spacing": {
+      "minInches": 18,
+      "maxInches": 24
+    },
+    "pruning": {
+      "shortGuide": "Trim lightly after flowering and avoid cutting into old woody stems."
+    },
+    "plantingWindows": [],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 90,
+      "daysToFirstHarvestMax": 120,
+      "windowLengthDaysMin": 20,
+      "windowLengthDaysMax": 45
+    },
+    "seasonalityNotes": [
+      "Perennial herb"
+    ]
+  },
+  {
+    "id": "marigold",
+    "name": "Marigold",
+    "category": "flower",
+    "summary": "A cheerful flower often tucked into vegetable beds for color and companion planting tradition.",
+    "spacing": {
+      "minInches": 8,
+      "maxInches": 12
+    },
+    "pruning": {
+      "shortGuide": "Deadhead spent blooms to encourage more flowers through the season."
+    },
+    "plantingWindows": [],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 45,
+      "daysToFirstHarvestMax": 60,
+      "windowLengthDaysMin": 45,
+      "windowLengthDaysMax": 120
+    },
+    "seasonalityNotes": [
+      "Warm-season flower"
+    ]
+  },
+  {
+    "id": "forget-me-not",
+    "name": "Forget-Me-Not",
+    "category": "flower",
+    "summary": "A cool-friendly flowering plant grown for soft blue blooms and cottage-garden charm.",
+    "spacing": {
+      "minInches": 6,
+      "maxInches": 10
+    },
+    "pruning": {
+      "shortGuide": "Trim spent blooms if you want tidier plants, or let some reseed naturally."
+    },
+    "plantingWindows": [],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 60,
+      "daysToFirstHarvestMax": 90,
+      "windowLengthDaysMin": 30,
+      "windowLengthDaysMax": 60
+    },
+    "seasonalityNotes": [
+      "Flowering annual or short-lived perennial depending on climate"
+    ]
+  }
+]

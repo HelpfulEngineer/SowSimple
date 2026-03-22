@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Sow Simple icon</title>
+  <desc id="desc">A rounded garden tile with a leaf and calendar marks.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f4ebd7" />
+      <stop offset="100%" stop-color="#dbe5c8" />
+    </linearGradient>
+    <linearGradient id="leaf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8fae68" />
+      <stop offset="100%" stop-color="#305847" />
+    </linearGradient>
+  </defs>
+  <rect x="32" y="32" width="448" height="448" rx="118" fill="url(#bg)" />
+  <rect x="112" y="120" width="288" height="248" rx="44" fill="#fffdf8" stroke="#305847" stroke-width="18" />
+  <path d="M154 172h204" stroke="#c96841" stroke-width="22" stroke-linecap="round" />
+  <path d="M192 102v52M320 102v52" stroke="#305847" stroke-width="20" stroke-linecap="round" />
+  <circle cx="184" cy="220" r="18" fill="#6f845d" />
+  <circle cx="248" cy="220" r="18" fill="#6f845d" opacity=".65" />
+  <circle cx="312" cy="220" r="18" fill="#6f845d" opacity=".45" />
+  <path
+    d="M258 386c84-14 118-95 118-155-54 0-138 31-156 114-4 18 2 31 38 41Z"
+    fill="url(#leaf)"
+  />
+  <path d="M235 356c22-31 66-68 122-96" fill="none" stroke="#f5efe3" stroke-width="14" stroke-linecap="round" />
+</svg>
