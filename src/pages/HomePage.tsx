@@ -14,7 +14,12 @@ import {
   searchPlants,
   type PlantCategoryFilter
 } from "../lib/searchPlants";
-import { getRecentPlantIds } from "../lib/storage";
+import {
+  getRecentPlantIds,
+  getStoredLibraryView,
+  setStoredLibraryView,
+  type LibraryView
+} from "../lib/storage";
 import { getZoneRange } from "../lib/zones";
 
 const statusOrder: Record<string, number> = {
@@ -28,10 +33,16 @@ export function HomePage() {
   const { selectedZone } = useAppOutletContext();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<PlantCategoryFilter>("all");
+  const [libraryView, setLibraryView] = useState<LibraryView>(() =>
+    getStoredLibraryView()
+  );
+  const [isPlantingNowCollapsed, setPlantingNowCollapsed] = useState(false);
   const [recentIds, setRecentIds] = useState<string[]>(() => getRecentPlantIds());
 
   const today = normalizeCalendarDate(new Date());
   const deferredQuery = useDeferredValue(query);
+  const isFiltering =
+    deferredQuery.trim().length > 0 || category !== "all";
   const zoneRange = getZoneRange(selectedZone);
   const frost = LAST_FROST_BY_ZONE[zoneRange];
   const plantableNow = getPlantsPlantableNow(plants, zoneRange, today).sort(
@@ -51,6 +62,21 @@ export function HomePage() {
   useEffect(() => {
     setRecentIds(getRecentPlantIds());
   }, [location.key]);
+
+  useEffect(() => {
+    setStoredLibraryView(libraryView);
+  }, [libraryView]);
+
+  useEffect(() => {
+    if (isFiltering) {
+      setPlantingNowCollapsed(true);
+    }
+  }, [isFiltering]);
+
+  const libraryLayoutClass =
+    libraryView === "cards"
+      ? "grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+      : "space-y-3";
 
   return (
     <div className="space-y-7 pb-6">
@@ -86,7 +112,7 @@ export function HomePage() {
       </section>
 
       <section className="space-y-4">
-        <div className="flex items-end justify-between gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
               Planting Now
@@ -95,12 +121,30 @@ export function HomePage() {
               What can I plant right now?
             </h2>
           </div>
-          <p className="text-sm text-slate-600">
-            Based on zone {selectedZone} and today&apos;s date.
-          </p>
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <p className="text-sm text-slate-600">
+              Based on zone {selectedZone} and today&apos;s date.
+            </p>
+            <button
+              type="button"
+              onClick={() => setPlantingNowCollapsed((collapsed) => !collapsed)}
+              className="action-button-secondary"
+              aria-expanded={!isPlantingNowCollapsed}
+            >
+              {isPlantingNowCollapsed
+                ? `Show Section (${plantableNow.length})`
+                : "Minimize Section"}
+            </button>
+          </div>
         </div>
 
-        {plantableNow.length > 0 ? (
+        {isPlantingNowCollapsed ? (
+          <div className="surface-card px-5 py-4 text-sm text-slate-700 sm:px-6">
+            {plantableNow.length > 0
+              ? `${plantableNow.length} plants are currently in a live planting window for zone ${selectedZone}.`
+              : "Nothing is inside a live planting window today."}
+          </div>
+        ) : plantableNow.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {plantableNow.map((match) => (
               <PlantCard
@@ -119,7 +163,7 @@ export function HomePage() {
         )}
       </section>
 
-      {recentPlants.length > 0 ? (
+      {recentPlants.length > 0 && !isFiltering ? (
         <section className="space-y-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
@@ -145,25 +189,54 @@ export function HomePage() {
 
       <section className="space-y-4">
         <div className="space-y-4">
-          <div>
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
               Browse Library
             </p>
             <h2 className="mt-1 font-display text-2xl text-slate-900">
               All plants
             </h2>
+            </div>
+            <div className="flex items-center gap-2 self-start rounded-full border border-slate-200 bg-white/90 p-1">
+              <button
+                type="button"
+                onClick={() => setLibraryView("cards")}
+                className={
+                  libraryView === "cards"
+                    ? "action-button bg-pine px-4 py-2 text-white hover:bg-pine/90"
+                    : "action-button bg-transparent px-4 py-2 text-slate-700 hover:bg-slate-100"
+                }
+                aria-pressed={libraryView === "cards"}
+              >
+                Cards
+              </button>
+              <button
+                type="button"
+                onClick={() => setLibraryView("list")}
+                className={
+                  libraryView === "list"
+                    ? "action-button bg-pine px-4 py-2 text-white hover:bg-pine/90"
+                    : "action-button bg-transparent px-4 py-2 text-slate-700 hover:bg-slate-100"
+                }
+                aria-pressed={libraryView === "list"}
+              >
+                List
+              </button>
+            </div>
           </div>
           <FilterChips value={category} onChange={setCategory} />
         </div>
 
         {filteredPlants.length > 0 ? (
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className={libraryLayoutClass}>
             {filteredPlants.map((plant) => (
               <PlantCard
                 key={plant.id}
                 plant={plant}
                 zoneRange={zoneRange}
                 statusLabel={liveLabels.get(plant.id)}
+                variant={libraryView === "cards" ? "card" : "list"}
               />
             ))}
           </div>
