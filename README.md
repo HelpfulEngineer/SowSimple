@@ -51,7 +51,13 @@ npm run dev
 npm run build
 ```
 
-4. Preview the production build:
+4. Run the automated tests:
+
+```bash
+npm run test
+```
+
+5. Preview the production build:
 
 ```bash
 npm run preview
@@ -68,6 +74,15 @@ Notes:
 
 - The app now uses `HashRouter`, so deep links work on GitHub Pages without a custom SPA fallback.
 - Asset and manifest paths are relative, so repository-based Pages URLs such as `https://username.github.io/repo-name/` work without extra base-path edits.
+
+## Deployment QA Checklist
+
+- Load the published site once on desktop and once on a phone.
+- Confirm search, category filters, and the cards/list toggle work.
+- Open a plant detail page and confirm the page scrolls to the top.
+- Run the harvest calculator and download an `.ics` file.
+- Refresh a plant detail URL and confirm the route still works on GitHub Pages.
+- Install the PWA, then reopen it with the network disabled and confirm search and plant details still work.
 
 ## Offline Notes
 
