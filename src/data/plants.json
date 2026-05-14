@@ -66,20 +66,20 @@
       {
         "plantId": "basil",
         "name": "Basil",
-        "reason": "A classic garden pairing that makes efficient use of space and is beloved by gardeners.",
-        "confidence": "traditional"
+        "reason": "Research-backed pairing: basil can help mask tomatoes from thrips and reduce hornworm egg-laying.",
+        "confidence": "practical"
       },
       {
         "plantId": "marigold",
         "name": "Marigold",
-        "reason": "Widely planted nearby as part of general pest-management strategies.",
+        "reason": "Research-backed companion that can help reduce thrip or whitefly pressure around tomatoes.",
         "confidence": "practical"
       },
       {
-        "plantId": "onion",
-        "name": "Onion",
-        "reason": "Can fit well nearby and helps diversify bed planting.",
-        "confidence": "traditional"
+        "plantId": "lettuce",
+        "name": "Lettuce",
+        "reason": "A useful early-season companion that can share the bed before tomato plants fill in.",
+        "confidence": "practical"
       }
     ],
     "harvest": {
@@ -160,20 +160,20 @@
       {
         "plantId": "basil",
         "name": "Basil",
-        "reason": "A popular pairing in kitchen gardens and a nice use of nearby space.",
+        "reason": "A popular kitchen-garden pairing with similar warmth and watering needs.",
         "confidence": "traditional"
       },
       {
         "plantId": "marigold",
         "name": "Marigold",
-        "reason": "Commonly used near peppers as part of companion planting mixes.",
+        "reason": "A useful flowering companion that can help support beneficial insects around warm-season beds.",
         "confidence": "practical"
       },
       {
-        "plantId": "onion",
-        "name": "Onion",
-        "reason": "Pairs well in many bed layouts and helps diversify the planting area.",
-        "confidence": "traditional"
+        "plantId": "lettuce",
+        "name": "Lettuce",
+        "reason": "Can be grown early in the same bed before pepper plants size up for summer.",
+        "confidence": "practical"
       }
     ],
     "harvest": {
@@ -370,6 +370,12 @@
         "name": "Peas",
         "reason": "A nice cool-season companion in mixed spring beds.",
         "confidence": "traditional"
+      },
+      {
+        "plantId": "radish",
+        "name": "Radish",
+        "reason": "A classic space-saving pairing because radishes mature fast while carrots size up more slowly.",
+        "confidence": "practical"
       }
     ],
     "harvest": {
@@ -494,15 +500,21 @@
         "confidence": "practical"
       },
       {
-        "plantId": "green-onion",
-        "name": "Green Onion",
-        "reason": "A tidy companion for mixed planting layouts.",
-        "confidence": "traditional"
-      },
-      {
         "plantId": "radish",
         "name": "Radish",
         "reason": "Another fast cool-season crop that fits neatly into spring sowing plans.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "cilantro",
+        "name": "Cilantro",
+        "reason": "If allowed to flower nearby, cilantro attracts beneficial predators that help suppress aphids on lettuce and other greens.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "dill",
+        "name": "Dill",
+        "reason": "If allowed to flower nearby, dill attracts beneficial predators that help suppress aphids on lettuce and other greens.",
         "confidence": "practical"
       }
     ],
@@ -584,14 +596,14 @@
       {
         "plantId": "tomato",
         "name": "Tomato",
-        "reason": "The classic kitchen-garden duo. Gardeners absolutely adore this pairing.",
-        "confidence": "traditional"
+        "reason": "Research-backed pairing: basil can help mask tomatoes from thrips and reduce hornworm egg-laying.",
+        "confidence": "practical"
       },
       {
         "plantId": "pepper",
         "name": "Pepper",
         "reason": "Similar warmth needs make this a comfortable bedmate.",
-        "confidence": "practical"
+        "confidence": "traditional"
       }
     ],
     "harvest": {
@@ -668,7 +680,14 @@
         }
       }
     ],
-    "companions": [],
+    "companions": [
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "In squash studies, marigolds increased natural enemies and helped reduce damage from squash bugs and cucumber beetles.",
+        "confidence": "practical"
+      }
+    ],
     "harvest": {
       "daysToFirstHarvestMin": 45,
       "daysToFirstHarvestMax": 60,
@@ -745,7 +764,14 @@
         "notes": "Warm-season crop; Johnny's also supports later sowings in longer seasons."
       }
     ],
-    "companions": [],
+    "companions": [
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "In squash studies, marigolds increased natural enemies and helped reduce damage from squash bugs and cucumber beetles.",
+        "confidence": "practical"
+      }
+    ],
     "harvest": {
       "daysToFirstHarvestMin": 45,
       "daysToFirstHarvestMax": 60,
@@ -899,7 +925,32 @@
         "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
       }
     ],
-    "companions": [],
+    "companions": [
+      {
+        "plantId": "cilantro",
+        "name": "Cilantro",
+        "reason": "If allowed to flower nearby, cilantro attracts beneficial predators that help suppress aphids on leafy greens.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "dill",
+        "name": "Dill",
+        "reason": "If allowed to flower nearby, dill attracts beneficial predators that help suppress aphids on leafy greens.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "tomato",
+        "name": "Tomato",
+        "reason": "Works well as an early crop in beds that will later hold tomatoes.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "pepper",
+        "name": "Pepper",
+        "reason": "Works well as an early crop in beds that will later hold peppers.",
+        "confidence": "practical"
+      }
+    ],
     "harvest": {
       "daysToFirstHarvestMin": 35,
       "daysToFirstHarvestMax": 50,
@@ -956,7 +1007,20 @@
         }
       }
     ],
-    "companions": [],
+    "companions": [
+      {
+        "plantId": "dill",
+        "name": "Dill",
+        "reason": "Dill is a research-backed cole-crop companion that can help reduce cabbageworm pressure.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "cilantro",
+        "name": "Cilantro",
+        "reason": "If allowed to flower nearby, cilantro attracts aphid-eating beneficial insects that can help around leafy greens.",
+        "confidence": "practical"
+      }
+    ],
     "harvest": {
       "daysToFirstHarvestMin": 50,
       "daysToFirstHarvestMax": 70,
@@ -1142,7 +1206,26 @@
         "notes": "Approximate late-summer to fall sowing window for leaf harvest, inferred from OSU fall-planting guidance and the app's last-frost model."
       }
     ],
-    "companions": [],
+    "companions": [
+      {
+        "plantId": "lettuce",
+        "name": "Lettuce",
+        "reason": "If allowed to flower, cilantro attracts lacewings, lady beetles, parasitic wasps, and hoverflies that help control aphids on greens.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "spinach",
+        "name": "Spinach",
+        "reason": "If allowed to flower, cilantro supports beneficial predators that help suppress aphids on leafy greens.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "kale",
+        "name": "Kale",
+        "reason": "If allowed to flower, cilantro helps attract beneficial insects around aphid-prone greens and brassicas.",
+        "confidence": "practical"
+      }
+    ],
     "harvest": {
       "daysToFirstHarvestMin": 25,
       "daysToFirstHarvestMax": 45,
@@ -1241,7 +1324,32 @@
         "notes": "Approximate late-season sowing window inferred from repeat-sowing guidance and the app's last-frost model."
       }
     ],
-    "companions": [],
+    "companions": [
+      {
+        "plantId": "cabbage",
+        "name": "Cabbage",
+        "reason": "Research-backed cole-crop companion that can reduce cabbageworm pressure.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "broccoli",
+        "name": "Broccoli",
+        "reason": "Research-backed companion for broccoli that helps with common cabbageworm pests.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "lettuce",
+        "name": "Lettuce",
+        "reason": "If allowed to flower, dill attracts beneficial predators that help suppress aphids on lettuce and other greens.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "brussels-sprouts",
+        "name": "Brussels Sprouts",
+        "reason": "Research-backed cole-crop companion that can help reduce cabbageworm pressure.",
+        "confidence": "practical"
+      }
+    ],
     "harvest": {
       "daysToFirstHarvestMin": 40,
       "daysToFirstHarvestMax": 60,
@@ -1323,7 +1431,20 @@
         }
       }
     ],
-    "companions": [],
+    "companions": [
+      {
+        "plantId": "broccoli",
+        "name": "Broccoli",
+        "reason": "In one Iowa study, onions helped reduce cabbage looper and imported cabbageworm damage in broccoli.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "cabbage",
+        "name": "Cabbage",
+        "reason": "In one Iowa study, onions helped reduce cabbageworm damage in cabbage.",
+        "confidence": "practical"
+      }
+    ],
     "harvest": {
       "daysToFirstHarvestMin": 90,
       "daysToFirstHarvestMax": 120,
@@ -1338,7 +1459,7 @@
     "id": "green-onion",
     "name": "Green Onion",
     "category": "vegetable",
-    "summary": "A quick bunching onion that can be direct sown or transplanted from early spring into late summer.",
+    "summary": "A mild allium harvested young for fresh use, also called bunching onion, scallion, or spring onion.",
     "spacing": {
       "minInches": 2,
       "maxInches": 4
@@ -1400,7 +1521,20 @@
         "notes": "Johnny's supports direct seeding or transplanting from early spring to late summer."
       }
     ],
-    "companions": [],
+    "companions": [
+      {
+        "plantId": "broccoli",
+        "name": "Broccoli",
+        "reason": "Allium companions can help diversify cole-crop beds, and onion plantings reduced cabbageworm damage in broccoli studies.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "cabbage",
+        "name": "Cabbage",
+        "reason": "Allium companions can help diversify cole-crop beds, and onion plantings reduced cabbageworm damage in cabbage studies.",
+        "confidence": "practical"
+      }
+    ],
     "harvest": {
       "daysToFirstHarvestMin": 50,
       "daysToFirstHarvestMax": 65,
@@ -1477,7 +1611,7 @@
     "id": "green-beans",
     "name": "Green Beans",
     "category": "vegetable",
-    "summary": "A warm-season crop grown for tender pods and usually direct sown after frost.",
+    "summary": "A warm-season crop grown for tender pods, also called snap beans, and usually direct sown after frost.",
     "spacing": {
       "minInches": 4,
       "maxInches": 6
@@ -1669,7 +1803,14 @@
         "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
       }
     ],
-    "companions": [],
+    "companions": [
+      {
+        "plantId": "carrot",
+        "name": "Carrot",
+        "reason": "A classic space-saving pairing because radishes mature fast while carrots size up more slowly.",
+        "confidence": "practical"
+      }
+    ],
     "harvest": {
       "daysToFirstHarvestMin": 22,
       "daysToFirstHarvestMax": 35,
@@ -1799,7 +1940,20 @@
         }
       }
     ],
-    "companions": [],
+    "companions": [
+      {
+        "plantId": "dill",
+        "name": "Dill",
+        "reason": "Research-backed companion for cole crops that can help reduce cabbageworm pressure.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "onion",
+        "name": "Onion",
+        "reason": "In one Iowa study, onions helped reduce cabbage looper and imported cabbageworm damage in broccoli.",
+        "confidence": "practical"
+      }
+    ],
     "harvest": {
       "daysToFirstHarvestMin": 60,
       "daysToFirstHarvestMax": 90,
@@ -1872,7 +2026,26 @@
         }
       }
     ],
-    "companions": [],
+    "companions": [
+      {
+        "plantId": "dill",
+        "name": "Dill",
+        "reason": "Research-backed companion for cole crops that can help reduce cabbageworm egg-laying.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "onion",
+        "name": "Onion",
+        "reason": "In one Iowa study, onions helped reduce cabbageworm damage in cabbage.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "In one Iowa study, marigolds helped reduce cabbage looper and imported cabbageworm damage in cabbage.",
+        "confidence": "practical"
+      }
+    ],
     "harvest": {
       "daysToFirstHarvestMin": 70,
       "daysToFirstHarvestMax": 100,
@@ -2027,7 +2200,26 @@
         "notes": "Start indoors about ten weeks before outdoor planting. Direct sow only after soil warms to about 65F."
       }
     ],
-    "companions": [],
+    "companions": [
+      {
+        "plantId": "tomato",
+        "name": "Tomato",
+        "reason": "Research-backed companion for tomatoes that can help reduce thrip or whitefly pressure.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "cabbage",
+        "name": "Cabbage",
+        "reason": "In one Iowa study, marigolds helped reduce cabbageworm damage in cabbage.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "summer-squash",
+        "name": "Summer Squash",
+        "reason": "In squash studies, marigolds increased natural enemies and helped reduce damage from squash bugs and cucumber beetles.",
+        "confidence": "practical"
+      }
+    ],
     "harvest": {
       "daysToFirstHarvestMin": 45,
       "daysToFirstHarvestMax": 60,
@@ -2129,6 +2321,1072 @@
     },
     "seasonalityNotes": [
       "Flowering annual or short-lived perennial depending on climate"
+    ]
+  },
+  {
+    "id": "walla-walla-onion",
+    "name": "Walla Walla Onion",
+    "category": "vegetable",
+    "summary": "A mild, sweet bulbing onion usually grown as a transplant; Walla Walla types are prized fresh but do not store long.",
+    "spacing": {
+      "minInches": 4,
+      "maxInches": 6
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Keep beds weeded and allow tops to mature naturally."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 15,
+          "endWeeksBeforeLastFrost": 13
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 11,
+          "endWeeksBeforeLastFrost": 9
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "broccoli",
+        "name": "Broccoli",
+        "reason": "Onion companions reduced cabbage looper and imported cabbageworm damage in broccoli studies.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "cabbage",
+        "name": "Cabbage",
+        "reason": "Onion companions reduced cabbageworm damage in cabbage studies.",
+        "confidence": "practical"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 90,
+      "daysToFirstHarvestMax": 100,
+      "windowLengthDaysMin": 7,
+      "windowLengthDaysMax": 14,
+      "notes": "Sweet onion types like Walla Walla are best used fresh and generally do not store as long as standard storage onions."
+    },
+    "seasonalityNotes": [
+      "Cool-season bulb onion",
+      "Sweet onion type"
+    ]
+  },
+  {
+    "id": "brussels-sprouts",
+    "name": "Brussels Sprouts",
+    "category": "vegetable",
+    "summary": "A cool-season brassica usually grown for fall harvest, when light frosts improve flavor.",
+    "spacing": {
+      "minInches": 12,
+      "maxInches": 18
+    },
+    "pruning": {
+      "shortGuide": "For more even sprout sizing, pinch out the top bud once lower sprouts begin to form."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "summer",
+        "startIndoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 5
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 6,
+          "endWeeksAfterLastFrost": 10
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 5
+        },
+        "notes": "Best grown as a fall crop so sprouts mature in cool weather."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "summer",
+        "startIndoors": {
+          "startWeeksAfterLastFrost": 6,
+          "endWeeksAfterLastFrost": 10
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 10,
+          "endWeeksAfterLastFrost": 14
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 6,
+          "endWeeksAfterLastFrost": 10
+        },
+        "notes": "Best grown as a fall crop so sprouts mature in cool weather."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "summer",
+        "startIndoors": {
+          "startWeeksAfterLastFrost": 10,
+          "endWeeksAfterLastFrost": 14
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 14,
+          "endWeeksAfterLastFrost": 18
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 10,
+          "endWeeksAfterLastFrost": 14
+        },
+        "notes": "Best grown as a fall crop so sprouts mature in cool weather."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "summer",
+        "startIndoors": {
+          "startWeeksAfterLastFrost": 16,
+          "endWeeksAfterLastFrost": 20
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 20,
+          "endWeeksAfterLastFrost": 24
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 16,
+          "endWeeksAfterLastFrost": 20
+        },
+        "notes": "Approximate late-summer fall-crop window inferred from early-summer sowing guidance and the app's last-frost model."
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "dill",
+        "name": "Dill",
+        "reason": "A research-backed cole-crop companion that can help reduce cabbageworm pressure and support beneficial insects.",
+        "confidence": "practical"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 90,
+      "daysToFirstHarvestMax": 120,
+      "windowLengthDaysMin": 21,
+      "windowLengthDaysMax": 42,
+      "notes": "Harvest firm sprouts from the bottom up; flavor improves after light frosts."
+    },
+    "seasonalityNotes": [
+      "Cool-season brassica",
+      "Best as a fall crop"
+    ]
+  },
+  {
+    "id": "jalapeno-pepper",
+    "name": "Jalapeno Pepper",
+    "category": "vegetable",
+    "summary": "A medium-hot pepper grown like other warm-season peppers and harvested green or red.",
+    "spacing": {
+      "minInches": 18,
+      "maxInches": 24
+    },
+    "pruning": {
+      "shortGuide": "Remove damaged lower leaves and lightly shape only if needed. Most home gardeners do best with minimal pruning."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksBeforeLastFrost": 8
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 2,
+          "endWeeksAfterLastFrost": 4
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksBeforeLastFrost": 8
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 2,
+          "endWeeksAfterLastFrost": 3
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "basil",
+        "name": "Basil",
+        "reason": "A popular kitchen-garden pairing with similar warmth and watering needs.",
+        "confidence": "traditional"
+      },
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "A useful flowering companion that can help support beneficial insects around warm-season beds.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "lettuce",
+        "name": "Lettuce",
+        "reason": "Can be grown early in the same bed before pepper plants size up for summer.",
+        "confidence": "practical"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 65,
+      "daysToFirstHarvestMax": 75,
+      "windowLengthDaysMin": 30,
+      "windowLengthDaysMax": 60,
+      "notes": "Pick green for bright heat or let fruit ripen red for fuller flavor."
+    },
+    "seasonalityNotes": [
+      "Warm-season pepper",
+      "Hot pepper type"
+    ]
+  },
+  {
+    "id": "orange-bell-pepper",
+    "name": "Orange Bell Pepper",
+    "category": "vegetable",
+    "summary": "A sweet bell pepper that ripens from green to orange in warm weather.",
+    "spacing": {
+      "minInches": 18,
+      "maxInches": 24
+    },
+    "pruning": {
+      "shortGuide": "Remove damaged lower leaves and lightly shape only if needed. Most home gardeners do best with minimal pruning."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksBeforeLastFrost": 8
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 2,
+          "endWeeksAfterLastFrost": 4
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksBeforeLastFrost": 8
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 2,
+          "endWeeksAfterLastFrost": 3
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "basil",
+        "name": "Basil",
+        "reason": "A popular kitchen-garden pairing with similar warmth and watering needs.",
+        "confidence": "traditional"
+      },
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "A useful flowering companion that can help support beneficial insects around warm-season beds.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "lettuce",
+        "name": "Lettuce",
+        "reason": "Can be grown early in the same bed before pepper plants size up for summer.",
+        "confidence": "practical"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 65,
+      "daysToFirstHarvestMax": 75,
+      "windowLengthDaysMin": 30,
+      "windowLengthDaysMax": 60,
+      "notes": "Harvest green or wait for a full orange color and sweeter flavor."
+    },
+    "seasonalityNotes": [
+      "Warm-season pepper",
+      "Sweet bell pepper"
+    ]
+  },
+  {
+    "id": "cherry-tomato",
+    "name": "Cherry Tomato",
+    "category": "vegetable",
+    "summary": "A small-fruited tomato type that produces clusters of snackable fruit through the season.",
+    "spacing": {
+      "minInches": 18,
+      "maxInches": 24
+    },
+    "pruning": {
+      "shortGuide": "Remove lower leaves for airflow. Prune suckers on indeterminate types if you want tidier vines and larger fruit."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 3
+        },
+        "notes": "Wait until nights are reliably mild before transplanting."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "basil",
+        "name": "Basil",
+        "reason": "Research-backed pairing: basil can help mask tomatoes from thrips and reduce hornworm egg-laying.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "Research-backed companion that can help reduce thrip or whitefly pressure around tomatoes.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "lettuce",
+        "name": "Lettuce",
+        "reason": "A useful early-season companion that can share the bed before tomato plants fill in.",
+        "confidence": "practical"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 65,
+      "daysToFirstHarvestMax": 80,
+      "windowLengthDaysMin": 35,
+      "windowLengthDaysMax": 75,
+      "notes": "Harvest frequently once fruits color up to keep plants productive."
+    },
+    "seasonalityNotes": [
+      "Warm-season crop",
+      "Small-fruited tomato type"
+    ]
+  },
+  {
+    "id": "heirloom-tomato",
+    "name": "Heirloom Tomato",
+    "category": "vegetable",
+    "summary": "A tomato grown for distinctive flavor, color, or shape, often on large indeterminate vines.",
+    "spacing": {
+      "minInches": 18,
+      "maxInches": 24
+    },
+    "pruning": {
+      "shortGuide": "Remove lower leaves for airflow. Prune suckers on indeterminate types if you want tidier vines and larger fruit."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 3
+        },
+        "notes": "Wait until nights are reliably mild before transplanting."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "basil",
+        "name": "Basil",
+        "reason": "Research-backed pairing: basil can help mask tomatoes from thrips and reduce hornworm egg-laying.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "Research-backed companion that can help reduce thrip or whitefly pressure around tomatoes.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "lettuce",
+        "name": "Lettuce",
+        "reason": "A useful early-season companion that can share the bed before tomato plants fill in.",
+        "confidence": "practical"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 75,
+      "daysToFirstHarvestMax": 95,
+      "windowLengthDaysMin": 28,
+      "windowLengthDaysMax": 60,
+      "notes": "Fruit quality varies by cultivar; harvest when evenly colored and slightly softening."
+    },
+    "seasonalityNotes": [
+      "Warm-season crop",
+      "Often indeterminate"
+    ]
+  },
+  {
+    "id": "slicer-tomato",
+    "name": "Slicer Tomato",
+    "category": "vegetable",
+    "summary": "A medium to large tomato type grown for sandwiches, salads, and fresh slicing.",
+    "spacing": {
+      "minInches": 18,
+      "maxInches": 24
+    },
+    "pruning": {
+      "shortGuide": "Remove lower leaves for airflow. Prune suckers on indeterminate types if you want tidier vines and larger fruit."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 3
+        },
+        "notes": "Wait until nights are reliably mild before transplanting."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "basil",
+        "name": "Basil",
+        "reason": "Research-backed pairing: basil can help mask tomatoes from thrips and reduce hornworm egg-laying.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "Research-backed companion that can help reduce thrip or whitefly pressure around tomatoes.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "lettuce",
+        "name": "Lettuce",
+        "reason": "A useful early-season companion that can share the bed before tomato plants fill in.",
+        "confidence": "practical"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 70,
+      "daysToFirstHarvestMax": 85,
+      "windowLengthDaysMin": 30,
+      "windowLengthDaysMax": 65,
+      "notes": "Harvest once fruits are evenly colored and still firm enough to slice cleanly."
+    },
+    "seasonalityNotes": [
+      "Warm-season crop",
+      "Fresh slicing type"
+    ]
+  },
+  {
+    "id": "hot-banana-pepper",
+    "name": "Hot Banana Pepper",
+    "category": "vegetable",
+    "summary": "A tapered hot pepper harvested pale yellow through orange-red, depending on the level of heat you want.",
+    "spacing": {
+      "minInches": 18,
+      "maxInches": 24
+    },
+    "pruning": {
+      "shortGuide": "Remove damaged lower leaves and lightly shape only if needed. Most home gardeners do best with minimal pruning."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksBeforeLastFrost": 8
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 2,
+          "endWeeksAfterLastFrost": 4
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksBeforeLastFrost": 8
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 2,
+          "endWeeksAfterLastFrost": 3
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksBeforeLastFrost": 6
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        }
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "basil",
+        "name": "Basil",
+        "reason": "A popular kitchen-garden pairing with similar warmth and watering needs.",
+        "confidence": "traditional"
+      },
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "A useful flowering companion that can help support beneficial insects around warm-season beds.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "lettuce",
+        "name": "Lettuce",
+        "reason": "Can be grown early in the same bed before pepper plants size up for summer.",
+        "confidence": "practical"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 65,
+      "daysToFirstHarvestMax": 75,
+      "windowLengthDaysMin": 30,
+      "windowLengthDaysMax": 60,
+      "notes": "Harvest earlier for milder heat or let fruit color more fully for stronger flavor."
+    },
+    "seasonalityNotes": [
+      "Warm-season pepper",
+      "Hot pepper type"
+    ]
+  },
+  {
+    "id": "butter-lettuce",
+    "name": "Butter Lettuce",
+    "category": "vegetable",
+    "summary": "A tender butterhead lettuce with soft leaves and a mild flavor, best grown in cool weather.",
+    "spacing": {
+      "minInches": 6,
+      "maxInches": 9
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Thin crowded seedlings and harvest outer leaves regularly on loose-leaf types."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 2,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 2,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Aim to mature lettuce before hot weather; late-summer sowings are often better for fall harvest."
+      },
+      {
+        "zoneRange": "3-4",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 10,
+          "endWeeksAfterLastFrost": 12
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksBeforeLastFrost": 4
+        },
+        "transplantOutdoors": {
+          "startWeeksBeforeLastFrost": 2,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksBeforeLastFrost": 3,
+          "endWeeksAfterLastFrost": 3
+        },
+        "notes": "Aim to mature lettuce before hot weather; late-summer sowings are often better for fall harvest."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 14,
+          "endWeeksAfterLastFrost": 18
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 4,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Aim to mature lettuce before hot weather; late-summer sowings are often better for fall harvest."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 18,
+          "endWeeksAfterLastFrost": 24
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Aim to mature lettuce before hot weather; late-summer sowings are often better for fall harvest."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "fall",
+        "directSow": {
+          "startWeeksAfterLastFrost": 24,
+          "endWeeksAfterLastFrost": 36
+        },
+        "notes": "Approximate late-summer sowing window inferred from UMN fall guidance and the app's frost-bucket model."
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "carrot",
+        "name": "Carrot",
+        "reason": "Shares cool-season timing and works well in mixed beds.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "radish",
+        "name": "Radish",
+        "reason": "Another fast cool-season crop that fits neatly into spring sowing plans.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "cilantro",
+        "name": "Cilantro",
+        "reason": "If allowed to flower nearby, cilantro attracts beneficial predators that help suppress aphids on lettuce and other greens.",
+        "confidence": "practical"
+      },
+      {
+        "plantId": "dill",
+        "name": "Dill",
+        "reason": "If allowed to flower nearby, dill attracts beneficial predators that help suppress aphids on lettuce and other greens.",
+        "confidence": "practical"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 45,
+      "daysToFirstHarvestMax": 55,
+      "windowLengthDaysMin": 10,
+      "windowLengthDaysMax": 21,
+      "notes": "Harvest outer leaves early or cut the full head while it is still tender."
+    },
+    "seasonalityNotes": [
+      "Cool-season salad lettuce",
+      "Bolts in heat"
+    ]
+  },
+  {
+    "id": "sugar-snap-peas",
+    "name": "Sugar Snap Peas",
+    "category": "vegetable",
+    "summary": "An edible-pod pea grown in cool weather and harvested when pods are plump but still tender.",
+    "spacing": {
+      "minInches": 2,
+      "maxInches": 4
+    },
+    "pruning": {
+      "shortGuide": "No pruning needed. Provide support for vining types and harvest often."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 5,
+          "endWeeksAfterLastFrost": 0
+        }
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 6,
+          "endWeeksAfterLastFrost": 0
+        }
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 8,
+          "endWeeksAfterLastFrost": 0
+        }
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "directSow": {
+          "startWeeksBeforeLastFrost": 10,
+          "endWeeksAfterLastFrost": 0
+        }
+      }
+    ],
+    "companions": [],
+    "harvest": {
+      "daysToFirstHarvestMin": 59,
+      "daysToFirstHarvestMax": 70,
+      "windowLengthDaysMin": 14,
+      "windowLengthDaysMax": 28,
+      "notes": "Pick while pods are thick and juicy, before they become starchy."
+    },
+    "seasonalityNotes": [
+      "Cool-season legume",
+      "Edible-pod pea"
+    ]
+  },
+  {
+    "id": "spaghetti-squash",
+    "name": "Spaghetti Squash",
+    "category": "vegetable",
+    "summary": "A warm-season winter squash grown for oblong fruit with flesh that separates into strands when cooked.",
+    "spacing": {
+      "minInches": 24,
+      "maxInches": 36
+    },
+    "pruning": {
+      "shortGuide": "Minimal pruning is needed; guide vines only if they are running into paths or neighboring crops."
+    },
+    "plantingWindows": [
+      {
+        "zoneRange": "3-4",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 4,
+          "endWeeksBeforeLastFrost": 3
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 3
+        },
+        "notes": "Direct sow or transplant only after soil warms to about 65F."
+      },
+      {
+        "zoneRange": "5-6",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 4,
+          "endWeeksBeforeLastFrost": 3
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 3
+        },
+        "notes": "Direct sow or transplant only after soil warms to about 65F."
+      },
+      {
+        "zoneRange": "7-8",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 4,
+          "endWeeksBeforeLastFrost": 3
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 1,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Direct sow or transplant only after soil warms to about 65F."
+      },
+      {
+        "zoneRange": "9-10",
+        "season": "spring",
+        "startIndoors": {
+          "startWeeksBeforeLastFrost": 4,
+          "endWeeksBeforeLastFrost": 3
+        },
+        "transplantOutdoors": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 1
+        },
+        "directSow": {
+          "startWeeksAfterLastFrost": 0,
+          "endWeeksAfterLastFrost": 2
+        },
+        "notes": "Direct sow or transplant only after soil warms to about 65F."
+      }
+    ],
+    "companions": [
+      {
+        "plantId": "marigold",
+        "name": "Marigold",
+        "reason": "In squash studies, marigolds increased natural enemies and helped reduce damage from squash bugs and cucumber beetles.",
+        "confidence": "practical"
+      }
+    ],
+    "harvest": {
+      "daysToFirstHarvestMin": 85,
+      "daysToFirstHarvestMax": 110,
+      "windowLengthDaysMin": 14,
+      "windowLengthDaysMax": 28,
+      "notes": "Harvest when rinds are firm and cure fruit for about a week in warm, dry conditions before storing."
+    },
+    "seasonalityNotes": [
+      "Warm-season winter squash",
+      "Needs a long growing season"
     ]
   }
 ]
