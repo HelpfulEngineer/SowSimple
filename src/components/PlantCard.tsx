@@ -31,49 +31,52 @@ export function PlantCard({
     return (
       <Link
         to={`/plant/${plant.id}`}
-        className="surface-card block px-4 py-4 transition duration-150 hover:border-moss/25 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-pine/35 focus:ring-offset-2 sm:px-5"
+        className="block px-4 py-4 transition duration-150 hover:bg-slate-50/80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-pine/30 sm:px-5"
       >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-4">
           <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <p className="font-display text-xl text-slate-900 sm:text-2xl">
-                {plant.name}
-              </p>
-              <span className={`label-chip ${categoryStyles[plant.category]}`}>
-                {plant.category}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="font-display text-xl text-slate-900 sm:text-2xl">
+                    {plant.name}
+                  </p>
+                  <span className={`label-chip ${categoryStyles[plant.category]}`}>
+                    {plant.category}
+                  </span>
+                  {statusLabel ? (
+                    <span className="label-chip bg-pine text-white">
+                      {statusLabel}
+                    </span>
+                  ) : null}
+                </div>
+
+                <p className="mt-2 text-sm leading-6 text-slate-700">
+                  {plant.summary}
+                </p>
+              </div>
+
+              <span className="hidden shrink-0 text-sm font-semibold text-pine sm:inline">
+                View Details
               </span>
-              {statusLabel ? (
-                <span className="label-chip bg-pine text-white">
-                  {statusLabel}
-                </span>
-              ) : null}
             </div>
 
-            <p className="mt-3 text-sm leading-6 text-slate-700">
-              {plant.summary}
-            </p>
-
-            <p className="mt-3 text-sm text-slate-600">{timingText}</p>
+            <div className="mt-3 grid gap-2 border-t border-slate-200/80 pt-3 text-sm text-slate-600 sm:grid-cols-[minmax(0,1.4fr)_auto_auto] sm:items-center sm:gap-4">
+              <p className="font-medium text-slate-700">{timingText}</p>
+              <p>
+                <span className="font-semibold text-slate-900">Spacing:</span>{" "}
+                {plant.spacing.minInches}-{plant.spacing.maxInches} in
+              </p>
+              <p>
+                <span className="font-semibold text-slate-900">Harvest:</span>{" "}
+                {plant.harvest.daysToFirstHarvestMin}-{plant.harvest.daysToFirstHarvestMax} days
+              </p>
+            </div>
           </div>
 
-          <dl className="grid min-w-full grid-cols-2 gap-3 text-sm text-slate-700 sm:min-w-[14rem] sm:max-w-[14rem]">
-            <div className="rounded-2xl bg-slate-900/4 p-3">
-              <dt className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Spacing
-              </dt>
-              <dd className="mt-1 font-semibold text-slate-900">
-                {plant.spacing.minInches}-{plant.spacing.maxInches} in
-              </dd>
-            </div>
-            <div className="rounded-2xl bg-slate-900/4 p-3">
-              <dt className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                First harvest
-              </dt>
-              <dd className="mt-1 font-semibold text-slate-900">
-                {plant.harvest.daysToFirstHarvestMin}-{plant.harvest.daysToFirstHarvestMax} days
-              </dd>
-            </div>
-          </dl>
+          <span className="shrink-0 pt-1 text-lg text-slate-400 sm:hidden">
+            &gt;
+          </span>
         </div>
       </Link>
     );

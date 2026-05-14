@@ -36,7 +36,8 @@ export function HomePage() {
   const [libraryView, setLibraryView] = useState<LibraryView>(() =>
     getStoredLibraryView()
   );
-  const [isPlantingNowCollapsed, setPlantingNowCollapsed] = useState(false);
+  const [isPlantingNowCollapsed, setPlantingNowCollapsed] = useState(true);
+  const [isRecentCollapsed, setRecentCollapsed] = useState(true);
   const [recentIds, setRecentIds] = useState<string[]>(() => getRecentPlantIds());
 
   const today = normalizeCalendarDate(new Date());
@@ -76,7 +77,7 @@ export function HomePage() {
   const libraryLayoutClass =
     libraryView === "cards"
       ? "grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
-      : "space-y-3";
+      : "surface-card overflow-hidden divide-y divide-slate-200/70";
 
   return (
     <div className="space-y-7 pb-6">
@@ -165,25 +166,43 @@ export function HomePage() {
 
       {recentPlants.length > 0 && !isFiltering ? (
         <section className="space-y-4">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Recently Viewed
-            </p>
-            <h2 className="mt-1 font-display text-2xl text-slate-900">
-              Pick up where you left off
-            </h2>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
+                Recently Viewed
+              </p>
+              <h2 className="mt-1 font-display text-2xl text-slate-900">
+                Pick up where you left off
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => setRecentCollapsed((collapsed) => !collapsed)}
+              className="action-button-secondary self-start"
+              aria-expanded={!isRecentCollapsed}
+            >
+              {isRecentCollapsed
+                ? `Show Section (${recentPlants.length})`
+                : "Minimize Section"}
+            </button>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {recentPlants.map((plant) => (
-              <PlantCard
-                key={plant.id}
-                plant={plant}
-                zoneRange={zoneRange}
-                statusLabel={liveLabels.get(plant.id)}
-              />
-            ))}
-          </div>
+          {isRecentCollapsed ? (
+            <div className="surface-card px-5 py-4 text-sm text-slate-700 sm:px-6">
+              {recentPlants.length} plants are saved in your recent history.
+            </div>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {recentPlants.map((plant) => (
+                <PlantCard
+                  key={plant.id}
+                  plant={plant}
+                  zoneRange={zoneRange}
+                  statusLabel={liveLabels.get(plant.id)}
+                />
+              ))}
+            </div>
+          )}
         </section>
       ) : null}
 
@@ -191,12 +210,12 @@ export function HomePage() {
         <div className="space-y-4">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Browse Library
-            </p>
-            <h2 className="mt-1 font-display text-2xl text-slate-900">
-              All plants
-            </h2>
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
+                Browse Library
+              </p>
+              <h2 className="mt-1 font-display text-2xl text-slate-900">
+                All plants
+              </h2>
             </div>
             <div className="flex items-center gap-2 self-start rounded-full border border-slate-200 bg-white/90 p-1">
               <button
