@@ -157,6 +157,27 @@ export function PlantDetailPage() {
     downloadICS(`${currentPlant.id}-${method}-plan`, blob);
   }
 
+  const companionGroups = [
+    {
+      confidence: "practical",
+      title: "Practical",
+      description:
+        "Evidence-backed, insect-support, or clear space-sharing companions.",
+      companions: currentPlant.companions.filter(
+        (companion) => companion.confidence === "practical"
+      )
+    },
+    {
+      confidence: "traditional",
+      title: "Traditional",
+      description:
+        "Common garden pairings with more folklore or gardener-experience support.",
+      companions: currentPlant.companions.filter(
+        (companion) => companion.confidence === "traditional"
+      )
+    }
+  ].filter((group) => group.companions.length > 0);
+
   return (
     <div className="space-y-7 pb-6">
       <div className="flex items-center gap-3 text-sm text-slate-600">
@@ -164,7 +185,7 @@ export function PlantDetailPage() {
           to="/"
           className="action-button-secondary min-h-11 px-4 py-2 text-sm"
         >
-          Back to home
+          Back to results
         </Link>
         <span>Zone {selectedZone}</span>
       </div>
@@ -244,6 +265,11 @@ export function PlantDetailPage() {
               <p className="mt-2 text-sm leading-6 text-slate-700">
                 Indoor seed-start dates are reference guidance only. Harvest
                 calculations use outdoor sowing or transplant dates.
+              </p>
+              <p className="mt-3 max-w-3xl rounded-2xl border border-moss/20 bg-white/70 px-4 py-3 text-sm leading-6 text-slate-600">
+                Timing is approximate by USDA bucket and frost anchor. Treat
+                this as a planning range, then adjust for your local soil,
+                weather, and microclimate.
               </p>
             </div>
 
@@ -339,30 +365,56 @@ export function PlantDetailPage() {
             </div>
 
             {plant.companions.length > 0 ? (
-              <div className="grid gap-3">
-                {plant.companions.map((companion) => (
-                  <article
-                    key={`${plant.id}-${companion.plantId}`}
-                    className="surface-card px-5 py-5 sm:px-6"
+              <div className="grid gap-4 lg:grid-cols-2">
+                {companionGroups.map((group) => (
+                  <section
+                    key={group.confidence}
+                    className="surface-card overflow-hidden"
                   >
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <h4 className="font-semibold text-slate-900">
-                        {companion.name}
-                      </h4>
-                      <span
-                        className={
-                          companion.confidence === "practical"
-                            ? "label-chip bg-pine text-white"
-                            : "label-chip bg-clay/12 text-clay"
-                        }
-                      >
-                        {companion.confidence}
-                      </span>
+                    <div className="border-b border-slate-200/80 px-5 py-4 sm:px-6">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <h4 className="font-semibold text-slate-900">
+                          {group.title}
+                        </h4>
+                        <span
+                          className={
+                            group.confidence === "practical"
+                              ? "label-chip bg-pine text-white"
+                              : "label-chip bg-clay/12 text-clay"
+                          }
+                        >
+                          {group.companions.length}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {group.description}
+                      </p>
                     </div>
-                    <p className="mt-3 text-sm leading-6 text-slate-700">
-                      {companion.reason}
-                    </p>
-                  </article>
+
+                    <div className="divide-y divide-slate-200/80">
+                      {group.companions.map((companion) => (
+                        <Link
+                          key={`${plant.id}-${companion.plantId}`}
+                          to={`/plant/${companion.plantId}`}
+                          className="block px-5 py-4 transition hover:bg-slate-50/80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-pine/30 sm:px-6"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="font-semibold text-slate-900">
+                                {companion.name}
+                              </p>
+                              <p className="mt-2 text-sm leading-6 text-slate-700">
+                                {companion.reason}
+                              </p>
+                            </div>
+                            <span className="shrink-0 pt-1 text-sm font-semibold text-pine">
+                              View
+                            </span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </section>
                 ))}
               </div>
             ) : (

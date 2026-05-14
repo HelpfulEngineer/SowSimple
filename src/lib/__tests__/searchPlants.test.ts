@@ -38,4 +38,22 @@ describe("searchPlants", () => {
     expect(searchPlants([tomato, dill], "kitchen-garden")).toEqual([tomato]);
     expect(searchPlants([tomato, dill], "BASIL")).toEqual([tomato]);
   });
+
+  it("matches common aliases without changing plant data", () => {
+    const greenOnion = createTestPlant({
+      id: "green-onion",
+      name: "Green Onion"
+    });
+    const greenBeans = createTestPlant({
+      id: "green-beans",
+      name: "Green Beans"
+    });
+
+    expect(searchPlants([greenOnion, greenBeans], "scallion")).toEqual([
+      greenOnion
+    ]);
+    expect(searchPlants([greenOnion, greenBeans], "snap beans")).toEqual([
+      greenBeans
+    ]);
+  });
 });

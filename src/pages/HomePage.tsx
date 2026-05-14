@@ -1,4 +1,10 @@
-import { useDeferredValue, useEffect, useState } from "react";
+import {
+  useDeferredValue,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from "react";
 import { useLocation } from "react-router-dom";
 import { useAppOutletContext } from "../app/AppLayout";
 import { EmptyState } from "../components/EmptyState";
@@ -15,9 +21,12 @@ import {
   type PlantCategoryFilter
 } from "../lib/searchPlants";
 import {
+  getStoredHomePageState,
   getRecentPlantIds,
   getStoredLibraryView,
+  setStoredHomePageState,
   setStoredLibraryView,
+  type HomePageState,
   type LibraryView
 } from "../lib/storage";
 import { getZoneRange } from "../lib/zones";
@@ -31,14 +40,29 @@ const statusOrder: Record<string, number> = {
 export function HomePage() {
   const location = useLocation();
   const { selectedZone } = useAppOutletContext();
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<PlantCategoryFilter>("all");
-  const [libraryView, setLibraryView] = useState<LibraryView>(() =>
-    getStoredLibraryView()
+  const [initialHomeState] = useState(() => getStoredHomePageState());
+  const [query, setQuery] = useState(initialHomeState?.query ?? "");
+  const [category, setCategory] = useState<PlantCategoryFilter>(
+    initialHomeState?.category ?? "all"
   );
-  const [isPlantingNowCollapsed, setPlantingNowCollapsed] = useState(true);
-  const [isRecentCollapsed, setRecentCollapsed] = useState(true);
+  const [libraryView, setLibraryView] = useState<LibraryView>(() =>
+    initialHomeState?.libraryView ?? getStoredLibraryView()
+  );
+  const [isPlantingNowCollapsed, setPlantingNowCollapsed] = useState(
+    initialHomeState?.isPlantingNowCollapsed ?? true
+  );
+  const [isRecentCollapsed, setRecentCollapsed] = useState(
+    initialHomeState?.isRecentCollapsed ?? true
+  );
   const [recentIds, setRecentIds] = useState<string[]>(() => getRecentPlantIds());
+  const homeStateRef = useRef<HomePageState>({
+    query: initialHomeState?.query ?? "",
+    category: initialHomeState?.category ?? "all",
+    libraryView: initialHomeState?.libraryView ?? getStoredLibraryView(),
+    isPlantingNowCollapsed: initialHomeState?.isPlantingNowCollapsed ?? true,
+    isRecentCollapsed: initialHomeState?.isRecentCollapsed ?? true,
+    scrollY: initialHomeState?.scrollY ?? 0
+  });
 
   const today = normalizeCalendarDate(new Date());
   const deferredQuery = useDeferredValue(query);
@@ -67,6 +91,69 @@ export function HomePage() {
   useEffect(() => {
     setStoredLibraryView(libraryView);
   }, [libraryView]);
+
+  useEffect(() => {
+    const nextState: HomePageState = {
+      query,
+      category,
+      libraryView,
+      isPlantingNowCollapsed,
+      isRecentCollapsed,
+      scrollY: window.scrollY
+    };
+
+    homeStateRef.current = nextState;
+    setStoredHomePageState(nextState);
+  }, [
+    query,
+    category,
+    libraryView,
+    isPlantingNowCollapsed,
+    isRecentCollapsed
+  ]);
+
+  useEffect(() => {
+    let animationFrame = 0;
+
+    function saveScrollPosition() {
+      if (animationFrame) return;
+
+      animationFrame = window.requestAnimationFrame(() => {
+        animationFrame = 0;
+        const nextState = {
+          ...homeStateRef.current,
+          scrollY: window.scrollY
+        };
+        homeStateRef.current = nextState;
+        setStoredHomePageState(nextState);
+      });
+    }
+
+    window.addEventListener("scroll", saveScrollPosition, { passive: true });
+
+    return () => {
+      if (animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+      }
+
+      setStoredHomePageState({
+        ...homeStateRef.current,
+        scrollY: window.scrollY
+      });
+      window.removeEventListener("scroll", saveScrollPosition);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const scrollY = homeStateRef.current.scrollY;
+    if (scrollY <= 0) return;
+
+    const animationFrame = window.requestAnimationFrame(() => {
+      window.scrollTo(0, scrollY);
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, []);
 
   useEffect(() => {
     if (isFiltering) {

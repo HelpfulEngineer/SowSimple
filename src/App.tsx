@@ -11,6 +11,8 @@ function ScrollToTop() {
   const { pathname } = useLocation();
 
   useLayoutEffect(() => {
+    if (pathname === "/") return;
+
     window.scrollTo(0, 0);
   }, [pathname]);
 
