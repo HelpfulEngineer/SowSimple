@@ -37,10 +37,53 @@ const categoryStyles = {
   flower: "bg-amber-100 text-amber-900"
 } as const;
 
+const displayMethodOrder: PlantingMethodKey[] = [
+  "startIndoors",
+  "transplantOutdoors",
+  "directSow"
+];
+
+const preferredMethodOrder: PlantingMethodKey[] = [
+  "directSow",
+  "transplantOutdoors",
+  "startIndoors"
+];
+
+type CalculatedPlan = {
+  method: PlantingMethodKey;
+  plantingDate: Date;
+};
+
 function orderedWindows(windows: PlantingWindow[]) {
   return [...windows].sort(
     (left, right) => seasonOrder[left.season] - seasonOrder[right.season]
   );
+}
+
+function getSupportedMethodLabels(windows: PlantingWindow[]) {
+  return displayMethodOrder
+    .filter((methodKey) => windows.some((window) => Boolean(window[methodKey])))
+    .map((methodKey) => METHOD_LABELS[methodKey]);
+}
+
+function getBestMethodLabel(windows: PlantingWindow[]) {
+  const method = preferredMethodOrder.find((methodKey) =>
+    windows.some((window) => Boolean(window[methodKey]))
+  );
+
+  return method ? METHOD_LABELS[method] : "Timing expanding";
+}
+
+function getStatusClass(status: string) {
+  if (status === "Open now") {
+    return "label-chip justify-self-start bg-pine text-white";
+  }
+
+  if (status === "Upcoming") {
+    return "label-chip justify-self-start bg-amber-100 text-amber-900";
+  }
+
+  return "label-chip justify-self-start bg-slate-100 text-slate-700";
 }
 
 export function PlantDetailPage() {
@@ -72,6 +115,11 @@ export function PlantDetailPage() {
       ? calculateHarvestWindow(today, plant.harvest)
       : null
   );
+  const [calculatedPlan, setCalculatedPlan] = useState<CalculatedPlan | null>(
+    plant && calculatorMethods[0]
+      ? { method: calculatorMethods[0], plantingDate: today }
+      : null
+  );
 
   useEffect(() => {
     if (!plant) return;
@@ -91,11 +139,16 @@ export function PlantDetailPage() {
   useEffect(() => {
     if (!plant || calculatorMethods.length === 0) {
       setHarvestWindow(null);
+      setCalculatedPlan(null);
       return;
     }
 
+    const nextMethod = calculatorMethods[0];
     setPlantingDate(formatDateInput(today));
     setHarvestWindow(calculateHarvestWindow(today, plant.harvest));
+    setCalculatedPlan(
+      nextMethod ? { method: nextMethod, plantingDate: today } : null
+    );
   }, [calculatorMethodsKey, plant, today]);
 
   if (!plant) {
@@ -117,20 +170,18 @@ export function PlantDetailPage() {
 
     startTransition(() => {
       setHarvestWindow(calculateHarvestWindow(parsedDate, currentPlant.harvest));
+      setCalculatedPlan({ method, plantingDate: parsedDate });
     });
   }
 
   function handleExport() {
-    if (!harvestWindow || !method) return;
+    if (!harvestWindow || !calculatedPlan) return;
 
-    const parsedDate = parseDateInput(plantingDate);
-    if (!parsedDate) return;
-
-    const blob = generateICSFile(`${currentPlant.id}-${method}.ics`, [
+    const blob = generateICSFile(`${currentPlant.id}-${calculatedPlan.method}.ics`, [
       {
-        title: `${currentPlant.name}: ${METHOD_LABELS[method]}`,
+        title: `${currentPlant.name}: ${METHOD_LABELS[calculatedPlan.method]}`,
         description: `Plant in zone ${selectedZone}. Reference frost anchor: ${frost.label}.`,
-        startDate: parsedDate
+        startDate: calculatedPlan.plantingDate
       },
       {
         title: `${currentPlant.name}: harvest window opens`,
@@ -154,7 +205,7 @@ export function PlantDetailPage() {
       }
     ]);
 
-    downloadICS(`${currentPlant.id}-${method}-plan`, blob);
+    downloadICS(`${currentPlant.id}-${calculatedPlan.method}-plan`, blob);
   }
 
   const companionGroups = [
@@ -177,6 +228,10 @@ export function PlantDetailPage() {
       )
     }
   ].filter((group) => group.companions.length > 0);
+  const supportedMethodLabels = getSupportedMethodLabels(relevantWindows);
+  const bestMethodLabel = getBestMethodLabel(relevantWindows);
+  const firstYieldLabel =
+    plant.category === "flower" ? "First blooms" : "First harvest";
 
   return (
     <div className="space-y-7 pb-6">
@@ -204,16 +259,43 @@ export function PlantDetailPage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3 text-sm text-slate-700">
-            <span className="label-chip bg-slate-900/6 text-slate-700">
-              Zone bucket {zoneRange}
-            </span>
-            <span className="label-chip bg-slate-900/6 text-slate-700">
-              Frost anchor {frost.label}
-            </span>
-            <span className="label-chip bg-slate-900/6 text-slate-700">
-              Spacing {plant.spacing.minInches}-{plant.spacing.maxInches} in
-            </span>
+          <div className="grid grid-cols-2 gap-3 rounded-[1.75rem] border border-slate-200/80 bg-white/70 p-3 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="rounded-[1.25rem] bg-slate-900/4 px-4 py-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                Category
+              </p>
+              <p className="mt-1 font-semibold capitalize text-slate-950">
+                {plant.category}
+              </p>
+            </div>
+            <div className="rounded-[1.25rem] bg-slate-900/4 px-4 py-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                Zone bucket
+              </p>
+              <p className="mt-1 font-semibold text-slate-950">{zoneRange}</p>
+            </div>
+            <div className="rounded-[1.25rem] bg-slate-900/4 px-4 py-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                Spacing
+              </p>
+              <p className="mt-1 font-semibold text-slate-950">
+                {plant.spacing.minInches}-{plant.spacing.maxInches} in
+              </p>
+            </div>
+            <div className="rounded-[1.25rem] bg-slate-900/4 px-4 py-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                {firstYieldLabel}
+              </p>
+              <p className="mt-1 font-semibold text-slate-950">
+                {plant.harvest.daysToFirstHarvestMin}-{plant.harvest.daysToFirstHarvestMax} days
+              </p>
+            </div>
+            <div className="col-span-2 rounded-[1.25rem] bg-pine px-4 py-3 text-white sm:col-span-1">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/75">
+                Best method
+              </p>
+              <p className="mt-1 font-semibold">{bestMethodLabel}</p>
+            </div>
           </div>
 
           {plant.seasonalityNotes?.length ? (
@@ -234,24 +316,15 @@ export function PlantDetailPage() {
       <div className="grid gap-7 xl:grid-cols-[1.2fr_0.8fr]">
         <div className="space-y-7">
           <section className="surface-card px-5 py-6 sm:px-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[1.75rem] bg-slate-900/4 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  Spacing range
-                </p>
-                <p className="mt-2 text-2xl font-semibold text-slate-900">
-                  {plant.spacing.minInches}-{plant.spacing.maxInches} inches
-                </p>
-              </div>
-              <div className="rounded-[1.75rem] bg-slate-900/4 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  Pruning and cut-back
-                </p>
-                <p className="mt-2 text-sm leading-6 text-slate-700">
-                  {plant.pruning.shortGuide}
-                </p>
-              </div>
-            </div>
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Care Note
+            </p>
+            <h3 className="mt-1 font-display text-2xl text-slate-900">
+              Pruning and cut-back
+            </h3>
+            <p className="mt-3 text-sm leading-6 text-slate-700">
+              {plant.pruning.shortGuide}
+            </p>
           </section>
 
           <section className="space-y-4">
@@ -274,77 +347,95 @@ export function PlantDetailPage() {
             </div>
 
             {relevantWindows.length > 0 ? (
-              <div className="space-y-4">
-                {relevantWindows.map((window) => (
-                  <article
-                    key={`${window.zoneRange}-${window.season}-${window.notes ?? "default"}`}
-                    className="surface-card px-5 py-5 sm:px-6"
-                  >
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div>
-                        <span className="label-chip bg-pine text-white">
-                          {window.season}
-                        </span>
-                        {window.notes ? (
-                          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-700">
-                            {window.notes}
-                          </p>
-                        ) : null}
-                      </div>
-                      <span className="text-sm text-slate-500">
-                        Last frost anchor {formatLongDate(anchor)}
+              <div className="surface-card overflow-hidden">
+                <div className="border-b border-slate-200/80 px-5 py-4 sm:px-6">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-slate-900">
+                      Supported methods:{" "}
+                      <span className="text-slate-600">
+                        {supportedMethodLabels.join(", ")}
                       </span>
-                    </div>
+                    </p>
+                    <span className="text-sm text-slate-500">
+                      Frost anchor {formatLongDate(anchor)}
+                    </span>
+                  </div>
+                </div>
 
-                    <div className="mt-5 grid gap-3">
-                      {(["startIndoors", "transplantOutdoors", "directSow"] as const)
-                        .filter((methodKey) => Boolean(window[methodKey]))
-                        .map((methodKey) => {
-                          const resolved = resolvePlantingMethodWindow(
-                            anchor,
-                            window[methodKey]
-                          );
+                <div className="divide-y divide-slate-200/80">
+                  {relevantWindows.map((window, windowIndex) => {
+                    const rows = displayMethodOrder.flatMap((methodKey) => {
+                      const resolved = resolvePlantingMethodWindow(
+                        anchor,
+                        window[methodKey]
+                      );
 
-                          if (!resolved) return null;
+                      if (!resolved) return [];
 
-                          const status = getWindowStatus(
+                      return [
+                        {
+                          methodKey,
+                          resolved,
+                          status: getWindowStatus(
                             today,
                             resolved.start,
                             resolved.end
-                          );
+                          )
+                        }
+                      ];
+                    });
 
-                          return (
-                            <div
-                              key={methodKey}
-                              className="rounded-[1.5rem] border border-slate-200 bg-white px-4 py-4"
-                            >
-                              <div className="flex flex-wrap items-center justify-between gap-3">
-                                <div>
-                                  <p className="font-semibold text-slate-900">
+                    return (
+                      <article
+                        key={`${window.zoneRange}-${window.season}-${windowIndex}`}
+                        className="bg-white/75"
+                      >
+                        <div className="grid gap-3 px-5 py-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:px-6">
+                          <div>
+                            <span className="label-chip bg-pine text-white capitalize">
+                              {window.season}
+                            </span>
+                            {window.notes ? (
+                              <p className="mt-3 text-sm leading-6 text-slate-600">
+                                {window.notes}
+                              </p>
+                            ) : null}
+                          </div>
+
+                          <div className="overflow-hidden rounded-[1.25rem] border border-slate-200 bg-white">
+                            <div className="hidden grid-cols-[1fr_1.35fr_auto] gap-3 border-b border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 sm:grid">
+                              <span>Method</span>
+                              <span>Date range</span>
+                              <span>Status</span>
+                            </div>
+
+                            <div className="divide-y divide-slate-200">
+                              {rows.map(({ methodKey, resolved, status }) => (
+                                <div
+                                  key={`${window.season}-${methodKey}`}
+                                  className="grid gap-2 px-4 py-3 text-sm sm:grid-cols-[1fr_1.35fr_auto] sm:items-center sm:gap-3"
+                                >
+                                  <p className="font-semibold text-slate-950">
                                     {METHOD_LABELS[methodKey]}
                                   </p>
-                                  <p className="mt-1 text-sm text-slate-700">
-                                    {formatDateRange(resolved.start, resolved.end)}
+                                  <p className="text-slate-700">
+                                    {formatDateRange(
+                                      resolved.start,
+                                      resolved.end
+                                    )}
                                   </p>
+                                  <span className={getStatusClass(status)}>
+                                    {status}
+                                  </span>
                                 </div>
-                                <span
-                                  className={
-                                    status === "Open now"
-                                      ? "label-chip bg-pine text-white"
-                                      : status === "Upcoming"
-                                        ? "label-chip bg-amber-100 text-amber-900"
-                                        : "label-chip bg-slate-100 text-slate-700"
-                                  }
-                                >
-                                  {status}
-                                </span>
-                              </div>
+                              ))}
                             </div>
-                          );
-                        })}
-                    </div>
-                  </article>
-                ))}
+                          </div>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
               </div>
             ) : (
               <EmptyState
@@ -437,7 +528,7 @@ export function PlantDetailPage() {
             <div className="mt-5 grid gap-3">
               <div className="rounded-[1.5rem] bg-slate-900/4 p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  First {plant.category === "flower" ? "blooms" : "harvest"}
+                  {firstYieldLabel}
                 </p>
                 <p className="mt-2 text-lg font-semibold text-slate-900">
                   {plant.harvest.daysToFirstHarvestMin}-{plant.harvest.daysToFirstHarvestMax} days
@@ -510,36 +601,60 @@ export function PlantDetailPage() {
                 </form>
 
                 {harvestWindow ? (
-                  <div className="mt-5 space-y-3 rounded-[1.75rem] bg-slate-900/4 p-4">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                        Window opens
+                  <div className="mt-5 overflow-hidden rounded-[1.75rem] border border-pine/20 bg-white">
+                    <div className="bg-pine px-4 py-4 text-white">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
+                        Last calculated plan
                       </p>
-                      <p className="mt-1 text-lg font-semibold text-slate-900">
-                        {formatDateRange(
-                          harvestWindow.harvestStartMin,
-                          harvestWindow.harvestStartMax
-                        )}
+                      <p className="mt-1 text-lg font-semibold">
+                        {calculatedPlan
+                          ? METHOD_LABELS[calculatedPlan.method]
+                          : "Planting plan"}
                       </p>
+                      {calculatedPlan ? (
+                        <p className="mt-1 text-sm text-white/80">
+                          Planting date {formatLongDate(calculatedPlan.plantingDate)}
+                        </p>
+                      ) : null}
                     </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                        Window closes
+
+                    <div className="grid gap-3 p-4">
+                      <div className="rounded-[1.25rem] bg-slate-900/4 p-4">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                          Window opens
+                        </p>
+                        <p className="mt-1 text-lg font-semibold text-slate-900">
+                          {formatDateRange(
+                            harvestWindow.harvestStartMin,
+                            harvestWindow.harvestStartMax
+                          )}
+                        </p>
+                      </div>
+                      <div className="rounded-[1.25rem] bg-slate-900/4 p-4">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                          Window closes
+                        </p>
+                        <p className="mt-1 text-lg font-semibold text-slate-900">
+                          {formatDateRange(
+                            harvestWindow.harvestEndMin,
+                            harvestWindow.harvestEndMax
+                          )}
+                        </p>
+                      </div>
+
+                      <p className="text-sm leading-6 text-slate-600">
+                        Calendar export creates reminders for the planting date,
+                        harvest window opening, and harvest window closing.
                       </p>
-                      <p className="mt-1 text-lg font-semibold text-slate-900">
-                        {formatDateRange(
-                          harvestWindow.harvestEndMin,
-                          harvestWindow.harvestEndMax
-                        )}
-                      </p>
+
+                      <button
+                        type="button"
+                        className="action-button-primary w-full"
+                        onClick={handleExport}
+                      >
+                        Export this plan
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      className="action-button-secondary w-full"
-                      onClick={handleExport}
-                    >
-                      Export to calendar
-                    </button>
                   </div>
                 ) : null}
               </>
