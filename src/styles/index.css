@@ -60,4 +60,11 @@
   .label-chip {
     @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold tracking-wide;
   }
+
+  .summary-clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
 }

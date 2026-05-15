@@ -31,14 +31,14 @@ export function PlantCard({
     return (
       <Link
         to={`/plant/${plant.id}`}
-        className="block px-4 py-4 transition duration-150 hover:bg-slate-50/80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-pine/30 sm:px-5"
+        className="block border-l-4 border-transparent px-4 py-3 transition duration-150 odd:bg-white/70 even:bg-slate-50/80 hover:border-moss/60 hover:bg-moss/10 focus:border-pine focus:outline-none focus:ring-2 focus:ring-inset focus:ring-pine/30 sm:px-5"
       >
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="font-display text-xl text-slate-900 sm:text-2xl">
+                  <p className="font-display text-lg text-slate-950 sm:text-xl">
                     {plant.name}
                   </p>
                   <span className={`label-chip ${categoryStyles[plant.category]}`}>
@@ -51,7 +51,7 @@ export function PlantCard({
                   ) : null}
                 </div>
 
-                <p className="mt-2 text-sm leading-6 text-slate-700">
+                <p className="summary-clamp mt-1 text-sm leading-5 text-slate-700">
                   {plant.summary}
                 </p>
               </div>
@@ -61,8 +61,8 @@ export function PlantCard({
               </span>
             </div>
 
-            <div className="mt-3 grid gap-2 border-t border-slate-200/80 pt-3 text-sm text-slate-600 sm:grid-cols-[minmax(0,1.4fr)_auto_auto] sm:items-center sm:gap-4">
-              <p className="font-medium text-slate-700">{timingText}</p>
+            <div className="mt-2 grid gap-1.5 border-t border-slate-300/80 pt-2 text-xs text-slate-600 sm:grid-cols-[minmax(0,1.4fr)_auto_auto] sm:items-center sm:gap-4 sm:text-sm">
+              <p className="font-semibold text-slate-700">{timingText}</p>
               <p>
                 <span className="font-semibold text-slate-900">Spacing:</span>{" "}
                 {plant.spacing.minInches}-{plant.spacing.maxInches} in
@@ -74,7 +74,7 @@ export function PlantCard({
             </div>
           </div>
 
-          <span className="shrink-0 pt-1 text-lg text-slate-400 sm:hidden">
+          <span className="shrink-0 pt-0.5 text-lg text-slate-400 sm:hidden">
             &gt;
           </span>
         </div>

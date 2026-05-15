@@ -164,7 +164,7 @@ export function HomePage() {
   const libraryLayoutClass =
     libraryView === "cards"
       ? "grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
-      : "surface-card overflow-hidden divide-y divide-slate-200/70";
+      : "surface-card overflow-hidden divide-y divide-slate-300/80 ring-1 ring-slate-200/70";
 
   return (
     <div className="space-y-7 pb-6">
