@@ -67,4 +67,48 @@
     -webkit-line-clamp: 2;
     overflow: hidden;
   }
+
+  .garden-board-viewport {
+    @apply min-h-[26rem] overflow-auto sm:min-h-[34rem];
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .garden-board {
+    min-height: calc(26rem * var(--garden-zoom, 1));
+    min-width: 100%;
+    width: calc(100% * var(--garden-zoom, 1));
+    touch-action: pan-x pan-y;
+  }
+
+  @media (min-width: 640px) {
+    .garden-board {
+      min-height: calc(34rem * var(--garden-zoom, 1));
+    }
+  }
+
+  .garden-grid {
+    background-image:
+      linear-gradient(rgba(48, 88, 71, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(48, 88, 71, 0.1) 1px, transparent 1px),
+      linear-gradient(135deg, rgba(201, 104, 65, 0.08), transparent 48%);
+    background-size: 2rem 2rem, 2rem 2rem, 100% 100%;
+  }
+
+  .garden-bed {
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .garden-bed:active {
+    cursor: grabbing;
+  }
+
+  .garden-planting-marker {
+    touch-action: none;
+  }
+
+  .garden-custom-point {
+    touch-action: none;
+  }
 }

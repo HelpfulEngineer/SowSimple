@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { HashRouter, Route, Routes, useLocation } from "react-router-dom";
 import { AppLayout } from "./app/AppLayout";
 import { HomePage } from "./pages/HomePage";
+import { GardenTrackerPage } from "./pages/GardenTrackerPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { PlantDetailPage } from "./pages/PlantDetailPage";
 import { getStoredZone, setStoredZone } from "./lib/storage";
@@ -41,6 +42,7 @@ export default function App() {
           }
         >
           <Route index element={<HomePage />} />
+          <Route path="gardens" element={<GardenTrackerPage />} />
           <Route path="plant/:plantId" element={<PlantDetailPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
