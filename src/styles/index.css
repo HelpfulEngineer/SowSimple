@@ -74,6 +74,18 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  .garden-editor-viewport {
+    min-height: 0;
+    touch-action: none;
+  }
+
+  .garden-editor-panel {
+    max-height: 44vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .garden-board {
     min-height: calc(26rem * var(--garden-zoom, 1));
     min-width: 100%;
@@ -96,12 +108,20 @@
   }
 
   .garden-bed {
+    touch-action: pan-x pan-y;
+  }
+
+  .garden-bed-editable {
     cursor: grab;
     touch-action: none;
   }
 
-  .garden-bed:active {
+  .garden-bed-editable:active {
     cursor: grabbing;
+  }
+
+  .garden-bed-readonly {
+    cursor: default;
   }
 
   .garden-planting-marker {
@@ -110,5 +130,43 @@
 
   .garden-custom-point {
     touch-action: none;
+  }
+
+  .garden-resize-handle {
+    position: absolute;
+    z-index: 35;
+    border: 2px solid white;
+    background: #305847;
+    box-shadow: 0 8px 20px rgba(42, 56, 41, 0.22);
+    touch-action: none;
+  }
+
+  .garden-resize-handle-right {
+    right: -0.8rem;
+    top: 50%;
+    height: 2.25rem;
+    width: 1.25rem;
+    transform: translateY(-50%);
+    border-radius: 9999px;
+    cursor: ew-resize;
+  }
+
+  .garden-resize-handle-bottom {
+    bottom: -0.8rem;
+    left: 50%;
+    height: 1.25rem;
+    width: 2.25rem;
+    transform: translateX(-50%);
+    border-radius: 9999px;
+    cursor: ns-resize;
+  }
+
+  .garden-resize-handle-corner {
+    bottom: -0.9rem;
+    right: -0.9rem;
+    height: 2rem;
+    width: 2rem;
+    border-radius: 9999px;
+    cursor: nwse-resize;
   }
 }

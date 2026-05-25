@@ -97,10 +97,65 @@ type CustomPointDragState = {
   pointerId: number;
 };
 
-type DragState = BedDragState | PlantingDragState | CustomPointDragState;
+type BedResizeHandle = "width" | "height" | "both";
+
+type BedResizeDragState = {
+  kind: "bed-resize";
+  id: string;
+  pointerId: number;
+  startClientX: number;
+  startClientY: number;
+  originWidth: number;
+  originHeight: number;
+  x: number;
+  y: number;
+  handle: BedResizeHandle;
+};
+
+type BoardPanState = {
+  kind: "board-pan";
+  pointerId: number;
+  startClientX: number;
+  startClientY: number;
+  startScrollLeft: number;
+  startScrollTop: number;
+  point: { x: number; y: number };
+  moved: boolean;
+};
+
+type DragState =
+  | BedDragState
+  | PlantingDragState
+  | CustomPointDragState
+  | BedResizeDragState
+  | BoardPanState;
+
+type PlantingSelection = {
+  bedId: string;
+  plantingId: string;
+};
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
+}
+
+function getPointDistance(
+  first: { x: number; y: number },
+  second: { x: number; y: number }
+) {
+  return Math.hypot(first.x - second.x, first.y - second.y);
+}
+
+function isTextEditingTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false;
+
+  const tagName = target.tagName.toLowerCase();
+  return (
+    tagName === "input" ||
+    tagName === "select" ||
+    tagName === "textarea" ||
+    target.isContentEditable
+  );
 }
 
 function makeId(prefix: string) {
@@ -224,9 +279,18 @@ function updatePlantingInState(
 export function GardenTrackerPage() {
   const navigate = useNavigate();
   const boardRef = useRef<HTMLDivElement | null>(null);
+  const boardViewportRef = useRef<HTMLDivElement | null>(null);
+  const activeEditorPointersRef = useRef(
+    new Map<number, { x: number; y: number }>()
+  );
+  const pinchStateRef = useRef<{
+    startDistance: number;
+    startZoom: number;
+  } | null>(null);
   const [gardenState, setGardenState] = useState<GardenTrackerState>(() =>
     getStoredGardenTrackerState()
   );
+  const [isEditorOpen, setEditorOpen] = useState(false);
   const [mode, setMode] = useState<GardenMode>("beds");
   const [selectedShape, setSelectedShape] =
     useState<GardenBedShape>("rectangle");
@@ -236,15 +300,26 @@ export function GardenTrackerPage() {
   );
   const [customPlantName, setCustomPlantName] = useState("Custom plant");
   const [mapZoom, setMapZoom] = useState(1);
+  const [selectedPlantingTarget, setSelectedPlantingTarget] =
+    useState<PlantingSelection | null>(null);
   const [dragState, setDragState] = useState<DragState | null>(null);
 
   const selectedBed =
     gardenState.beds.find((bed) => bed.id === gardenState.selectedBedId) ??
     null;
-  const selectedPlant =
-    selectedPlantId === CUSTOM_PLANT_VALUE
-      ? null
-      : getPlantById(selectedPlantId);
+  const selectedPlantingBed = selectedPlantingTarget
+    ? gardenState.beds.find((bed) => bed.id === selectedPlantingTarget.bedId) ??
+      null
+    : null;
+  const selectedPlanting =
+    selectedPlantingBed && selectedPlantingTarget
+      ? selectedPlantingBed.plantings.find(
+          (planting) => planting.id === selectedPlantingTarget.plantingId
+        ) ?? null
+      : null;
+  const selectedPlantingLabel = selectedPlanting
+    ? getPlantingLabel(selectedPlanting)
+    : "";
   const normalizedPlantQuery = plantQuery.trim().toLocaleLowerCase();
   const matchingPlants = useMemo(() => {
     const matches = normalizedPlantQuery
@@ -270,10 +345,97 @@ export function GardenTrackerPage() {
     setStoredGardenTrackerState(gardenState);
   }, [gardenState]);
 
-  function setSelectedBedId(bedId: string | null) {
+  useEffect(() => {
+    if (!selectedPlantingTarget) return;
+
+    const bed = gardenState.beds.find(
+      (gardenBed) => gardenBed.id === selectedPlantingTarget.bedId
+    );
+    const hasPlanting = bed?.plantings.some(
+      (planting) => planting.id === selectedPlantingTarget.plantingId
+    );
+
+    if (!hasPlanting) {
+      setSelectedPlantingTarget(null);
+    }
+  }, [gardenState, selectedPlantingTarget]);
+
+  useEffect(() => {
+    if (!isEditorOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isEditorOpen]);
+
+  useEffect(() => {
+    const deleteTargetBedId = selectedBed?.id;
+    const deleteTargetPlanting = selectedPlantingTarget;
+    if (!isEditorOpen || (!deleteTargetBedId && !deleteTargetPlanting)) return;
+    const bedId = deleteTargetBedId;
+
+    function handleDeleteKey(event: KeyboardEvent) {
+      if (event.key !== "Delete") return;
+      if (isTextEditingTarget(event.target)) return;
+
+      event.preventDefault();
+      if (deleteTargetPlanting) {
+        removePlanting(
+          deleteTargetPlanting.bedId,
+          deleteTargetPlanting.plantingId
+        );
+        return;
+      }
+
+      if (bedId) {
+        deleteBedById(bedId);
+      }
+    }
+
+    window.addEventListener("keydown", handleDeleteKey);
+
+    return () => {
+      window.removeEventListener("keydown", handleDeleteKey);
+    };
+  }, [
+    isEditorOpen,
+    selectedBed?.id,
+    selectedPlantingTarget?.bedId,
+    selectedPlantingTarget?.plantingId
+  ]);
+
+  function isPinchZooming() {
+    return pinchStateRef.current !== null;
+  }
+
+  function openEditor() {
+    setEditorOpen(true);
+  }
+
+  function closeEditor() {
+    activeEditorPointersRef.current.clear();
+    pinchStateRef.current = null;
+    setDragState(null);
+    setSelectedPlantingTarget(null);
+    setMapZoom(1);
+    boardViewportRef.current?.scrollTo({ left: 0, top: 0 });
+    setEditorOpen(false);
+  }
+
+  function setSelectedBedId(
+    bedId: string | null,
+    options: { preservePlantingSelection?: boolean } = {}
+  ) {
     const bed = gardenState.beds.find((gardenBed) => gardenBed.id === bedId);
     if (bed) {
       setSelectedShape(bed.shape);
+    }
+
+    if (!options.preservePlantingSelection) {
+      setSelectedPlantingTarget(null);
     }
 
     setGardenState((state) => ({ ...state, selectedBedId: bedId }));
@@ -291,12 +453,69 @@ export function GardenTrackerPage() {
   }
 
   function handleBoardPointerDown(event: PointerEvent<HTMLDivElement>) {
-    if (mode !== "beds") return;
+    if (!isEditorOpen) {
+      return;
+    }
+
+    if (activeEditorPointersRef.current.size >= 2 || isPinchZooming()) return;
     if (event.target !== event.currentTarget) return;
 
-    const size = DEFAULT_BED_SIZES[selectedShape];
     const point = getPointerPercent(event, event.currentTarget);
-    addBedAt(point.x - size.width / 2, point.y - size.height / 2);
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDragState({
+      kind: "board-pan",
+      pointerId: event.pointerId,
+      startClientX: event.clientX,
+      startClientY: event.clientY,
+      startScrollLeft: boardViewportRef.current?.scrollLeft ?? 0,
+      startScrollTop: boardViewportRef.current?.scrollTop ?? 0,
+      point,
+      moved: false
+    });
+  }
+
+  function handleBoardPointerMove(event: PointerEvent<HTMLDivElement>) {
+    if (
+      dragState?.kind !== "board-pan" ||
+      dragState.pointerId !== event.pointerId ||
+      !boardViewportRef.current ||
+      isPinchZooming()
+    ) {
+      return;
+    }
+
+    const deltaX = event.clientX - dragState.startClientX;
+    const deltaY = event.clientY - dragState.startClientY;
+    const moved =
+      dragState.moved || Math.abs(deltaX) > 6 || Math.abs(deltaY) > 6;
+
+    if (moved) {
+      boardViewportRef.current.scrollLeft = dragState.startScrollLeft - deltaX;
+      boardViewportRef.current.scrollTop = dragState.startScrollTop - deltaY;
+    }
+
+    setDragState({ ...dragState, moved });
+  }
+
+  function handleBoardPointerUp(event: PointerEvent<HTMLDivElement>) {
+    if (
+      dragState?.kind !== "board-pan" ||
+      dragState.pointerId !== event.pointerId
+    ) {
+      return;
+    }
+
+    event.currentTarget.releasePointerCapture(event.pointerId);
+
+    if (!dragState.moved && mode === "beds") {
+      const size = DEFAULT_BED_SIZES[selectedShape];
+      addBedAt(
+        dragState.point.x - size.width / 2,
+        dragState.point.y - size.height / 2
+      );
+    }
+
+    setDragState(null);
   }
 
   function updateSelectedBed(updater: (bed: GardenBed) => GardenBed) {
@@ -365,17 +584,31 @@ export function GardenTrackerPage() {
     });
   }
 
-  function deleteSelectedBed() {
-    if (!selectedBed) return;
-
+  function deleteBedById(bedId: string) {
     setGardenState((state) => {
-      const beds = state.beds.filter((bed) => bed.id !== selectedBed.id);
+      const beds = state.beds.filter((bed) => bed.id !== bedId);
+      const selectedBedId =
+        state.selectedBedId === bedId
+          ? beds[0]?.id ?? null
+          : beds.some((bed) => bed.id === state.selectedBedId)
+            ? state.selectedBedId
+            : beds[0]?.id ?? null;
 
       return {
         beds,
-        selectedBedId: beds[0]?.id ?? null
+        selectedBedId
       };
     });
+    if (selectedPlantingTarget?.bedId === bedId) {
+      setSelectedPlantingTarget(null);
+    }
+    setDragState(null);
+  }
+
+  function deleteSelectedBed() {
+    if (!selectedBed) return;
+
+    deleteBedById(selectedBed.id);
   }
 
   function addPlantingToBed(
@@ -406,6 +639,7 @@ export function GardenTrackerPage() {
         })
       )
     );
+    setSelectedPlantingTarget({ bedId, plantingId: planting.id });
   }
 
   function updateSelectedCustomPoints(
@@ -446,6 +680,10 @@ export function GardenTrackerPage() {
     updateSelectedCustomPoints(() => DEFAULT_CUSTOM_POINTS);
   }
 
+  function clearPlantSearch() {
+    setPlantQuery("");
+  }
+
   function updateMapZoom(value: number) {
     setMapZoom(clamp(value, MIN_MAP_ZOOM, MAX_MAP_ZOOM));
   }
@@ -460,6 +698,67 @@ export function GardenTrackerPage() {
     );
   }
 
+  function handleEditorPointerDownCapture(event: PointerEvent<HTMLDivElement>) {
+    if (!isEditorOpen || event.pointerType === "mouse") return;
+
+    activeEditorPointersRef.current.set(event.pointerId, {
+      x: event.clientX,
+      y: event.clientY
+    });
+
+    if (activeEditorPointersRef.current.size === 2) {
+      const [first, second] = Array.from(
+        activeEditorPointersRef.current.values()
+      );
+      const startDistance = getPointDistance(first, second);
+      pinchStateRef.current = {
+        startDistance,
+        startZoom: mapZoom
+      };
+      setDragState(null);
+    }
+  }
+
+  function handleEditorPointerMoveCapture(event: PointerEvent<HTMLDivElement>) {
+    if (
+      !isEditorOpen ||
+      event.pointerType === "mouse" ||
+      !activeEditorPointersRef.current.has(event.pointerId)
+    ) {
+      return;
+    }
+
+    activeEditorPointersRef.current.set(event.pointerId, {
+      x: event.clientX,
+      y: event.clientY
+    });
+
+    if (pinchStateRef.current && activeEditorPointersRef.current.size >= 2) {
+      event.preventDefault();
+      const [first, second] = Array.from(
+        activeEditorPointersRef.current.values()
+      );
+      const nextDistance = getPointDistance(first, second);
+
+      if (pinchStateRef.current.startDistance > 0) {
+        updateMapZoom(
+          (pinchStateRef.current.startZoom * nextDistance) /
+            pinchStateRef.current.startDistance
+        );
+      }
+    }
+  }
+
+  function handleEditorPointerEndCapture(event: PointerEvent<HTMLDivElement>) {
+    if (!isEditorOpen || event.pointerType === "mouse") return;
+
+    activeEditorPointersRef.current.delete(event.pointerId);
+
+    if (activeEditorPointersRef.current.size < 2) {
+      pinchStateRef.current = null;
+    }
+  }
+
   function removePlanting(bedId: string, plantingId: string) {
     setGardenState((state) =>
       updateBedInState(state, bedId, (bed) => ({
@@ -469,6 +768,12 @@ export function GardenTrackerPage() {
         )
       }))
     );
+    if (
+      selectedPlantingTarget?.bedId === bedId &&
+      selectedPlantingTarget.plantingId === plantingId
+    ) {
+      setSelectedPlantingTarget(null);
+    }
   }
 
   function handleBedPointerDown(
@@ -476,6 +781,11 @@ export function GardenTrackerPage() {
     bed: GardenBed
   ) {
     event.stopPropagation();
+    if (!isEditorOpen) {
+      return;
+    }
+
+    if (activeEditorPointersRef.current.size >= 2 || isPinchZooming()) return;
     setSelectedBedId(bed.id);
 
     if (mode === "plants") {
@@ -505,7 +815,8 @@ export function GardenTrackerPage() {
       dragState?.kind !== "bed" ||
       dragState.id !== bed.id ||
       dragState.pointerId !== event.pointerId ||
-      !boardRef.current
+      !boardRef.current ||
+      isPinchZooming()
     ) {
       return;
     }
@@ -534,12 +845,101 @@ export function GardenTrackerPage() {
     setDragState(null);
   }
 
+  function handleBedResizePointerDown(
+    event: PointerEvent<HTMLButtonElement>,
+    bed: GardenBed,
+    handle: BedResizeHandle
+  ) {
+    event.stopPropagation();
+    if (activeEditorPointersRef.current.size >= 2 || isPinchZooming()) return;
+
+    setSelectedBedId(bed.id);
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDragState({
+      kind: "bed-resize",
+      id: bed.id,
+      pointerId: event.pointerId,
+      startClientX: event.clientX,
+      startClientY: event.clientY,
+      originWidth: bed.width,
+      originHeight: bed.height,
+      x: bed.x,
+      y: bed.y,
+      handle
+    });
+  }
+
+  function handleBedResizePointerMove(event: PointerEvent<HTMLButtonElement>) {
+    if (
+      dragState?.kind !== "bed-resize" ||
+      dragState.pointerId !== event.pointerId ||
+      !boardRef.current ||
+      isPinchZooming()
+    ) {
+      return;
+    }
+
+    event.stopPropagation();
+    const boardRect = boardRef.current.getBoundingClientRect();
+    const deltaX =
+      ((event.clientX - dragState.startClientX) / boardRect.width) * 100;
+    const deltaY =
+      ((event.clientY - dragState.startClientY) / boardRect.height) * 100;
+
+    setGardenState((state) =>
+      updateBedInState(state, dragState.id, (bed) => {
+        const nextWidth =
+          dragState.handle === "width" || dragState.handle === "both"
+            ? dragState.originWidth + deltaX
+            : dragState.originWidth;
+        const nextHeight =
+          dragState.handle === "height" || dragState.handle === "both"
+            ? dragState.originHeight + deltaY
+            : dragState.originHeight;
+
+        if (bed.shape === "circle") {
+          const diameter = clamp(
+            Math.max(nextWidth, nextHeight),
+            16,
+            Math.min(60, 100 - dragState.x, 100 - dragState.y)
+          );
+
+          return {
+            ...bed,
+            width: diameter,
+            height: diameter
+          };
+        }
+
+        return {
+          ...bed,
+          width: clamp(nextWidth, 16, 100 - dragState.x),
+          height: clamp(nextHeight, 16, 100 - dragState.y)
+        };
+      })
+    );
+  }
+
+  function handleBedResizePointerUp(event: PointerEvent<HTMLButtonElement>) {
+    if (
+      dragState?.kind !== "bed-resize" ||
+      dragState.pointerId !== event.pointerId
+    ) {
+      return;
+    }
+
+    event.stopPropagation();
+    event.currentTarget.releasePointerCapture(event.pointerId);
+    setDragState(null);
+  }
+
   function handleCustomPointPointerDown(
     event: PointerEvent<HTMLButtonElement>,
     bedId: string,
     pointIndex: number
   ) {
     event.stopPropagation();
+    if (activeEditorPointersRef.current.size >= 2 || isPinchZooming()) return;
     setSelectedBedId(bedId);
     event.currentTarget.setPointerCapture(event.pointerId);
     setDragState({
@@ -553,7 +953,8 @@ export function GardenTrackerPage() {
   function handleCustomPointPointerMove(event: PointerEvent<HTMLButtonElement>) {
     if (
       dragState?.kind !== "custom-point" ||
-      dragState.pointerId !== event.pointerId
+      dragState.pointerId !== event.pointerId ||
+      isPinchZooming()
     ) {
       return;
     }
@@ -603,6 +1004,16 @@ export function GardenTrackerPage() {
     planting: GardenPlanting
   ) {
     event.stopPropagation();
+    if (!isEditorOpen) {
+      if (planting.plantId) {
+        navigate(`/plant/${planting.plantId}`);
+      }
+      return;
+    }
+
+    if (activeEditorPointersRef.current.size >= 2 || isPinchZooming()) return;
+    setSelectedBedId(bed.id, { preservePlantingSelection: true });
+    setSelectedPlantingTarget({ bedId: bed.id, plantingId: planting.id });
     const bedElement = event.currentTarget.closest<HTMLElement>("[data-bed-id]");
     if (!bedElement) return;
 
@@ -627,7 +1038,8 @@ export function GardenTrackerPage() {
   function handlePlantingPointerMove(event: PointerEvent<HTMLButtonElement>) {
     if (
       dragState?.kind !== "planting" ||
-      dragState.pointerId !== event.pointerId
+      dragState.pointerId !== event.pointerId ||
+      isPinchZooming()
     ) {
       return;
     }
@@ -666,135 +1078,204 @@ export function GardenTrackerPage() {
     event.stopPropagation();
     event.currentTarget.releasePointerCapture(event.pointerId);
 
-    if (!dragState.moved && dragState.plantId) {
+    if (!dragState.moved && isEditorOpen) {
+      setSelectedBedId(dragState.bedId, { preservePlantingSelection: true });
+      setSelectedPlantingTarget({
+        bedId: dragState.bedId,
+        plantingId: dragState.plantingId
+      });
+    } else if (!dragState.moved && dragState.plantId) {
       navigate(`/plant/${dragState.plantId}`);
     }
 
     setDragState(null);
   }
 
+  const mapShellClass = isEditorOpen
+    ? "fixed inset-0 z-50 flex flex-col overflow-hidden bg-cream"
+    : "surface-card overflow-hidden";
+  const mapHeaderClass = isEditorOpen
+    ? "shrink-0 border-b border-slate-200/80 bg-white/95 px-3 py-3 shadow-sm sm:px-5"
+    : "border-b border-slate-200/80 px-5 py-4 sm:px-6";
+  const mapViewportClass = isEditorOpen
+    ? "garden-board-viewport garden-editor-viewport relative flex-1 bg-cream"
+    : "garden-board-viewport relative bg-cream";
+
   return (
     <div className="space-y-7 pb-6">
       <section className="surface-card px-5 py-6 sm:px-7 sm:py-7">
-        <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
-          <div className="space-y-3">
-            <span className="label-chip bg-pine text-white">
-              Garden Tracker
+        <div className="space-y-3">
+          <span className="label-chip bg-pine text-white">
+            Garden Tracker
+          </span>
+          <h2 className="font-display text-3xl text-slate-900 sm:text-4xl">
+            Map each bed, nickname it, and place what you planted.
+          </h2>
+          <div className="flex flex-wrap gap-3 text-sm text-slate-700">
+            <span className="label-chip bg-slate-900/6 text-slate-700">
+              Beds: {gardenState.beds.length}
             </span>
-            <h2 className="font-display text-3xl text-slate-900 sm:text-4xl">
-              Map each bed, nickname it, and place what you planted.
-            </h2>
-            <div className="flex flex-wrap gap-3 text-sm text-slate-700">
-              <span className="label-chip bg-slate-900/6 text-slate-700">
-                Beds: {gardenState.beds.length}
+            <span className="label-chip bg-slate-900/6 text-slate-700">
+              Plantings: {plantedCount}
+            </span>
+            {selectedBed ? (
+              <span className="label-chip bg-clay/10 text-clay">
+                Active: {selectedBed.nickname}
               </span>
-              <span className="label-chip bg-slate-900/6 text-slate-700">
-                Plantings: {plantedCount}
-              </span>
-              {selectedBed ? (
-                <span className="label-chip bg-clay/10 text-clay">
-                  Active: {selectedBed.nickname}
-                </span>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="inline-flex rounded-full border border-slate-200 bg-white/90 p-1">
-            <button
-              type="button"
-              onClick={() => setMode("beds")}
-              className={
-                mode === "beds"
-                  ? "action-button bg-pine px-4 py-2 text-white hover:bg-pine/90"
-                  : "action-button bg-transparent px-4 py-2 text-slate-700 hover:bg-slate-100"
-              }
-              aria-pressed={mode === "beds"}
-            >
-              Beds
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("plants")}
-              className={
-                mode === "plants"
-                  ? "action-button bg-pine px-4 py-2 text-white hover:bg-pine/90"
-                  : "action-button bg-transparent px-4 py-2 text-slate-700 hover:bg-slate-100"
-              }
-              aria-pressed={mode === "plants"}
-            >
-              Plants
-            </button>
+            ) : null}
           </div>
         </div>
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_21rem]">
-        <section className="surface-card overflow-hidden">
-          <div className="border-b border-slate-200/80 px-5 py-4 sm:px-6">
+      <div className="grid gap-6">
+        <section className={mapShellClass}>
+          <div className={mapHeaderClass}>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
-                  Garden Map
+                  {isEditorOpen ? "Edit Beds" : "Garden Map"}
                 </p>
-                <h3 className="mt-1 font-display text-2xl text-slate-900">
-                  {mode === "beds" ? "Draw beds" : "Place plants"}
-                </h3>
+                {isEditorOpen && selectedBed ? (
+                  <input
+                    type="text"
+                    value={selectedBed.nickname}
+                    onChange={(event) =>
+                      updateSelectedBed((bed) => ({
+                        ...bed,
+                        nickname: event.target.value
+                      }))
+                    }
+                    className="mt-1 w-full min-w-0 rounded-2xl border border-slate-200 bg-white/90 px-3 py-2 font-display text-2xl text-slate-900 shadow-sm outline-none transition focus:border-moss/70 focus:ring-4 focus:ring-moss/15 sm:min-w-80"
+                    aria-label="Bed nickname"
+                    placeholder="Garden bed name"
+                  />
+                ) : (
+                  <h3 className="mt-1 font-display text-2xl text-slate-900">
+                    Your garden beds
+                  </h3>
+                )}
+                {isEditorOpen ? (
+                  <p className="mt-1 text-sm text-slate-600">
+                    {mode === "beds" ? "Draw beds" : "Place plants"}
+                  </p>
+                ) : null}
               </div>
-              <button
-                type="button"
-                onClick={() => addBedAt()}
-                className="action-button-secondary self-start"
-              >
-                Add Bed
-              </button>
+              <div className="flex flex-wrap items-center gap-2">
+                {isEditorOpen ? (
+                  <div className="inline-flex rounded-full border border-slate-200 bg-white/90 p-1">
+                    <button
+                      type="button"
+                      onClick={() => setMode("beds")}
+                      className={
+                        mode === "beds"
+                          ? "action-button bg-pine px-4 py-2 text-white hover:bg-pine/90"
+                          : "action-button bg-transparent px-4 py-2 text-slate-700 hover:bg-slate-100"
+                      }
+                      aria-pressed={mode === "beds"}
+                    >
+                      Beds
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMode("plants")}
+                      className={
+                        mode === "plants"
+                          ? "action-button bg-pine px-4 py-2 text-white hover:bg-pine/90"
+                          : "action-button bg-transparent px-4 py-2 text-slate-700 hover:bg-slate-100"
+                      }
+                      aria-pressed={mode === "plants"}
+                    >
+                      Plants
+                    </button>
+                  </div>
+                ) : null}
+                <button
+                  type="button"
+                  onClick={isEditorOpen ? () => addBedAt() : openEditor}
+                  className="action-button-secondary self-start"
+                >
+                  {isEditorOpen ? "Add Bed" : "Edit Beds"}
+                </button>
+                {isEditorOpen ? (
+                  <button
+                    type="button"
+                    onClick={closeEditor}
+                    className="action-button-primary self-start"
+                  >
+                    Done
+                  </button>
+                ) : null}
+              </div>
             </div>
           </div>
 
-          <div className="garden-board-viewport bg-cream">
+          <div
+            ref={boardViewportRef}
+            className={mapViewportClass}
+            onPointerDownCapture={handleEditorPointerDownCapture}
+            onPointerMoveCapture={handleEditorPointerMoveCapture}
+            onPointerUpCapture={handleEditorPointerEndCapture}
+            onPointerCancelCapture={handleEditorPointerEndCapture}
+          >
             <div
               ref={boardRef}
               className="garden-board relative overflow-hidden bg-cream"
               style={boardStyle}
               onPointerDown={handleBoardPointerDown}
+              onPointerMove={handleBoardPointerMove}
+              onPointerUp={handleBoardPointerUp}
+              onPointerCancel={handleBoardPointerUp}
               aria-label="Garden bed map"
             >
               <div className="pointer-events-none absolute inset-0 garden-grid" />
 
               {gardenState.beds.length === 0 ? (
                 <div className="pointer-events-none absolute inset-x-6 top-6 rounded-[1.5rem] border border-dashed border-moss/40 bg-white/80 px-5 py-4 text-sm leading-6 text-slate-700 shadow-sm">
-                  Select a shape and add your first bed.
+                  {isEditorOpen
+                    ? "Select a shape and add your first bed."
+                    : "Use Edit Beds to add your first bed."}
                 </div>
               ) : null}
 
               {gardenState.beds.map((bed, bedIndex) => {
-              const isSelected = bed.id === gardenState.selectedBedId;
-              const customPoints = getCustomPoints(bed);
-              const showCustomHandles =
-                mode === "beds" && isSelected && bed.shape === "custom";
-              const bedStyle: CSSProperties = {
-                left: `${bed.x}%`,
-                top: `${bed.y}%`,
-                width: `${bed.width}%`,
-                height: `${bed.height}%`
-              };
+                const isSelected =
+                  isEditorOpen && bed.id === gardenState.selectedBedId;
+                const customPoints = getCustomPoints(bed);
+                const showCustomHandles =
+                  isEditorOpen &&
+                  mode === "beds" &&
+                  isSelected &&
+                  bed.shape === "custom";
+                const showResizeHandles =
+                  isEditorOpen && mode === "beds" && isSelected;
+                const bedStyle: CSSProperties = {
+                  left: `${bed.x}%`,
+                  top: `${bed.y}%`,
+                  width: `${bed.width}%`,
+                  height: `${bed.height}%`
+                };
 
-              return (
-                <div
-                  key={bed.id}
-                  data-bed-id={bed.id}
-                  role="button"
-                  tabIndex={0}
-                  className={
-                    isSelected
-                      ? "garden-bed absolute z-10 outline outline-4 outline-pine/35"
-                      : "garden-bed absolute z-10 outline outline-1 outline-slate-700/15"
-                  }
-                  style={bedStyle}
-                  onPointerDown={(event) => handleBedPointerDown(event, bed)}
-                  onPointerMove={(event) => handleBedPointerMove(event, bed)}
-                  onPointerUp={handleBedPointerUp}
-                  onPointerCancel={handleBedPointerUp}
-                >
+                return (
+                  <div
+                    key={bed.id}
+                    data-bed-id={bed.id}
+                    role={isEditorOpen ? "button" : undefined}
+                    tabIndex={isEditorOpen ? 0 : undefined}
+                    className={
+                      isSelected
+                        ? "garden-bed garden-bed-editable absolute z-10 outline outline-4 outline-pine/35"
+                        : `garden-bed ${
+                            isEditorOpen
+                              ? "garden-bed-editable"
+                              : "garden-bed-readonly"
+                          } absolute z-10 outline outline-1 outline-slate-700/15`
+                    }
+                    style={bedStyle}
+                    onPointerDown={(event) => handleBedPointerDown(event, bed)}
+                    onPointerMove={(event) => handleBedPointerMove(event, bed)}
+                    onPointerUp={handleBedPointerUp}
+                    onPointerCancel={handleBedPointerUp}
+                  >
                   <div
                     className="absolute inset-0 border border-white/70 bg-moss/65 shadow-soft"
                     style={getShapeLayerStyle(bed.shape, customPoints)}
@@ -827,6 +1308,47 @@ export function GardenTrackerPage() {
                       ))
                     : null}
 
+                  {showResizeHandles ? (
+                    <>
+                      <button
+                        type="button"
+                        className="garden-resize-handle garden-resize-handle-right"
+                        aria-label="Resize bed width"
+                        title="Resize width"
+                        onPointerDown={(event) =>
+                          handleBedResizePointerDown(event, bed, "width")
+                        }
+                        onPointerMove={handleBedResizePointerMove}
+                        onPointerUp={handleBedResizePointerUp}
+                        onPointerCancel={handleBedResizePointerUp}
+                      />
+                      <button
+                        type="button"
+                        className="garden-resize-handle garden-resize-handle-bottom"
+                        aria-label="Resize bed depth"
+                        title="Resize depth"
+                        onPointerDown={(event) =>
+                          handleBedResizePointerDown(event, bed, "height")
+                        }
+                        onPointerMove={handleBedResizePointerMove}
+                        onPointerUp={handleBedResizePointerUp}
+                        onPointerCancel={handleBedResizePointerUp}
+                      />
+                      <button
+                        type="button"
+                        className="garden-resize-handle garden-resize-handle-corner"
+                        aria-label="Resize bed width and depth"
+                        title="Resize width and depth"
+                        onPointerDown={(event) =>
+                          handleBedResizePointerDown(event, bed, "both")
+                        }
+                        onPointerMove={handleBedResizePointerMove}
+                        onPointerUp={handleBedResizePointerUp}
+                        onPointerCancel={handleBedResizePointerUp}
+                      />
+                    </>
+                  ) : null}
+
                   <div className="pointer-events-none relative z-10 flex h-full flex-col items-center justify-center px-2 text-center">
                     <p className="max-w-full truncate rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-slate-900 shadow-sm">
                       {bed.nickname}
@@ -842,12 +1364,20 @@ export function GardenTrackerPage() {
                     const markerClass = plant
                       ? categoryMarkerClasses[plant.category]
                       : "bg-white text-slate-950 ring-slate-300";
+                    const isSelectedPlanting =
+                      isEditorOpen &&
+                      selectedPlantingTarget?.bedId === bed.id &&
+                      selectedPlantingTarget.plantingId === planting.id;
 
                     return (
                       <button
                         key={planting.id}
                         type="button"
-                        className={`garden-planting-marker absolute z-20 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-sm font-black shadow-lg ring-4 ${markerClass}`}
+                        className={`garden-planting-marker absolute z-20 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-sm font-black shadow-lg ring-4 ${markerClass} ${
+                          isSelectedPlanting
+                            ? "outline outline-4 outline-clay/70"
+                            : ""
+                        }`}
                         style={{
                           left: `${planting.x}%`,
                           top: `${planting.y}%`
@@ -873,399 +1403,276 @@ export function GardenTrackerPage() {
                 );
               })}
             </div>
+
+            <div className="absolute right-3 top-3 z-40 flex flex-col items-center gap-2 rounded-full border border-slate-200 bg-white/95 p-2 shadow-soft">
+              <button
+                type="button"
+                onClick={() => nudgeMapZoom(MAP_ZOOM_STEP)}
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-pine text-2xl font-semibold text-white hover:bg-pine/90 focus:outline-none focus:ring-2 focus:ring-pine/35"
+                aria-label="Zoom in"
+                title="Zoom in"
+              >
+                +
+              </button>
+              <span className="px-1 text-xs font-semibold text-slate-700">
+                {mapZoomPercent}%
+              </span>
+              <button
+                type="button"
+                onClick={() => nudgeMapZoom(-MAP_ZOOM_STEP)}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-2xl font-semibold text-slate-800 hover:border-moss/40 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-pine/35"
+                aria-label="Zoom out"
+                title="Zoom out"
+              >
+                -
+              </button>
+            </div>
           </div>
-        </section>
 
-        <aside className="space-y-5">
-          <section className="surface-card px-5 py-5">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
-                  Beds
-                </p>
-                <h3 className="mt-1 font-display text-2xl text-slate-900">
-                  Bed setup
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => addBedAt()}
-                className="action-button-secondary min-h-11 px-4 py-2"
-              >
-                Add
-              </button>
-            </div>
-
-            <div className="mt-4 grid gap-2">
-              {gardenState.beds.map((bed) => (
-                <button
-                  key={bed.id}
-                  type="button"
-                  onClick={() => setSelectedBedId(bed.id)}
-                  className={
-                    bed.id === gardenState.selectedBedId
-                      ? "rounded-2xl border border-pine bg-pine px-4 py-3 text-left text-sm font-semibold text-white"
-                      : "rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-800 hover:border-moss/40"
-                  }
-                >
-                  <span className="block truncate">{bed.nickname}</span>
-                  <span
-                    className={
-                      bed.id === gardenState.selectedBedId
-                        ? "mt-1 block text-xs text-white/75"
-                        : "mt-1 block text-xs text-slate-500"
-                    }
-                  >
-                    {bed.shape}, {bed.plantings.length} planted
-                  </span>
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-5 rounded-[1.25rem] border border-slate-200 bg-white/75 p-3">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-slate-800">
-                  Map Zoom
-                </p>
-                <span className="rounded-full bg-slate-900/6 px-3 py-1 text-xs font-semibold text-slate-700">
-                  {mapZoomPercent}%
-                </span>
-              </div>
-              <div className="mt-3 grid grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => nudgeMapZoom(-MAP_ZOOM_STEP)}
-                  className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-2xl font-semibold text-slate-800 hover:border-moss/40 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-pine/35"
-                  aria-label="Zoom out"
-                  title="Zoom out"
-                >
-                  -
-                </button>
-                <input
-                  type="range"
-                  min={MIN_MAP_ZOOM * 100}
-                  max={MAX_MAP_ZOOM * 100}
-                  step={MAP_ZOOM_STEP * 100}
-                  value={mapZoomPercent}
-                  onChange={(event) =>
-                    updateMapZoom(Number(event.target.value) / 100)
-                  }
-                  className="w-full accent-pine"
-                  aria-label="Map zoom"
-                />
-                <button
-                  type="button"
-                  onClick={() => nudgeMapZoom(MAP_ZOOM_STEP)}
-                  className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-2xl font-semibold text-slate-800 hover:border-moss/40 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-pine/35"
-                  aria-label="Zoom in"
-                  title="Zoom in"
-                >
-                  +
-                </button>
-              </div>
-              <button
-                type="button"
-                onClick={() => updateMapZoom(1)}
-                className="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-moss/40"
-              >
-                100%
-              </button>
-            </div>
-
-            <div className="mt-5 space-y-4 border-t border-slate-200 pt-5">
-              <div>
-                <p className="mb-2 text-sm font-semibold text-slate-800">
-                  Shape
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {SHAPE_OPTIONS.map((shape) => (
-                    <button
-                      key={shape.value}
-                      type="button"
-                      onClick={() => handleSelectedShapeChange(shape.value)}
-                      className={
-                        (selectedBed?.shape ?? selectedShape) === shape.value
-                          ? "rounded-2xl border border-pine bg-pine px-3 py-3 text-sm font-semibold text-white"
-                          : "rounded-2xl border border-slate-200 bg-white px-3 py-3 text-sm font-semibold text-slate-700 hover:border-moss/40"
-                      }
-                    >
-                      {shape.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-slate-800">
-                  Nickname
-                </span>
-                <input
-                  type="text"
-                  value={selectedBed?.nickname ?? ""}
-                  disabled={!selectedBed}
-                  onChange={(event) =>
-                    updateSelectedBed((bed) => ({
-                      ...bed,
-                      nickname: event.target.value
-                    }))
-                  }
-                  className="field-shell min-h-12 rounded-2xl"
-                  placeholder="Patio tomatoes"
-                />
-              </label>
-
-              {selectedBed ? (
-                <div className="space-y-4">
-                  {selectedBed.shape === "circle" ? (
-                    <label className="block">
-                      <span className="mb-2 block text-sm font-semibold text-slate-800">
-                        Diameter
-                      </span>
-                      <input
-                        type="range"
-                        min="16"
-                        max="60"
-                        value={selectedBed.width}
-                        onChange={(event) =>
-                          updateSelectedBedSize(
-                            "width",
-                            Number(event.target.value)
-                          )
+          {isEditorOpen ? (
+            <div className="garden-editor-panel shrink-0 border-t border-slate-200/80 bg-white/95 p-3 shadow-soft">
+              {mode === "beds" ? (
+                <div className="space-y-3">
+                  <div className="flex gap-2 overflow-x-auto pb-1">
+                    {SHAPE_OPTIONS.map((shape) => (
+                      <button
+                        key={`editor-${shape.value}`}
+                        type="button"
+                        onClick={() => handleSelectedShapeChange(shape.value)}
+                        className={
+                          (selectedBed?.shape ?? selectedShape) === shape.value
+                            ? "min-w-24 rounded-2xl border border-pine bg-pine px-3 py-3 text-sm font-semibold text-white"
+                            : "min-w-24 rounded-2xl border border-slate-200 bg-white px-3 py-3 text-sm font-semibold text-slate-700 hover:border-moss/40"
                         }
-                        className="w-full accent-pine"
-                      />
-                    </label>
-                  ) : (
-                    <>
-                      <label className="block">
-                        <span className="mb-2 block text-sm font-semibold text-slate-800">
-                          Width
-                        </span>
-                        <input
-                          type="range"
-                          min="16"
-                          max="92"
-                          value={selectedBed.width}
-                          onChange={(event) =>
-                            updateSelectedBedSize(
-                              "width",
-                              Number(event.target.value)
-                            )
-                          }
-                          className="w-full accent-pine"
-                        />
-                      </label>
-                      <label className="block">
-                        <span className="mb-2 block text-sm font-semibold text-slate-800">
-                          Depth
-                        </span>
-                        <input
-                          type="range"
-                          min="16"
-                          max="78"
-                          value={selectedBed.height}
-                          onChange={(event) =>
-                            updateSelectedBedSize(
-                              "height",
-                              Number(event.target.value)
-                            )
-                          }
-                          className="w-full accent-pine"
-                        />
-                      </label>
-                    </>
-                  )}
-
-                  {selectedBed.shape === "custom" ? (
-                    <div className="rounded-[1.25rem] border border-slate-200 bg-white/75 p-3">
-                      <p className="text-sm font-semibold text-slate-800">
-                        Outline
-                      </p>
-                      <div className="mt-3 grid grid-cols-3 gap-2">
-                        <button
-                          type="button"
-                          onClick={addCustomPoint}
-                          className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-moss/40"
-                        >
-                          Add Point
-                        </button>
-                        <button
-                          type="button"
-                          onClick={removeCustomPoint}
-                          className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-moss/40"
-                        >
-                          Remove
-                        </button>
-                        <button
-                          type="button"
-                          onClick={resetCustomPoints}
-                          className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-moss/40"
-                        >
-                          Reset
-                        </button>
-                      </div>
-                    </div>
-                  ) : null}
-
-                  <button
-                    type="button"
-                    onClick={deleteSelectedBed}
-                    className="action-button-secondary w-full border-clay/30 text-clay hover:bg-clay/5"
-                  >
-                    Delete Bed
-                  </button>
-                </div>
-              ) : null}
-            </div>
-          </section>
-
-          <section className="surface-card px-5 py-5">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
-                Plants
-              </p>
-              <h3 className="mt-1 font-display text-2xl text-slate-900">
-                Plant picker
-              </h3>
-            </div>
-
-            <div className="mt-4 space-y-4">
-              <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-slate-800">
-                  Search database
-                </span>
-                <input
-                  type="search"
-                  value={plantQuery}
-                  onChange={(event) => setPlantQuery(event.target.value)}
-                  className="field-shell min-h-12 rounded-2xl"
-                  placeholder="Tomato, basil, marigold..."
-                />
-              </label>
-
-              <div className="grid max-h-72 gap-2 overflow-y-auto pr-1">
-                {matchingPlants.map((plant) => (
-                  <button
-                    key={plant.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedPlantId(plant.id);
-                      setPlantQuery(plant.name);
-                      setMode("plants");
-                    }}
-                    className={
-                      selectedPlantId === plant.id
-                        ? "rounded-2xl border border-pine bg-pine px-4 py-3 text-left text-sm font-semibold text-white"
-                        : "rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-800 hover:border-moss/40"
-                    }
-                  >
-                    <span className="block">{plant.name}</span>
-                    <span
-                      className={
-                        selectedPlantId === plant.id
-                          ? "mt-1 block text-xs capitalize text-white/75"
-                          : "mt-1 block text-xs capitalize text-slate-500"
-                      }
+                      >
+                        {shape.label}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => addBedAt()}
+                      className="min-w-24 rounded-2xl border border-slate-200 bg-white px-3 py-3 text-sm font-semibold text-slate-700 hover:border-moss/40"
                     >
-                      {plant.category}
-                    </span>
-                  </button>
-                ))}
-              </div>
+                      Add Bed
+                    </button>
+                  </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedPlantId(CUSTOM_PLANT_VALUE);
-                  setMode("plants");
-                }}
-                className={
-                  selectedPlantId === CUSTOM_PLANT_VALUE
-                    ? "action-button-primary w-full"
-                    : "action-button-secondary w-full"
-                }
-              >
-                Custom
-              </button>
+                  {selectedBed ? (
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {selectedBed.shape === "circle" ? (
+                        <label className="block">
+                          <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                            Diameter
+                          </span>
+                          <input
+                            type="range"
+                            min="16"
+                            max="60"
+                            value={selectedBed.width}
+                            onChange={(event) =>
+                              updateSelectedBedSize(
+                                "width",
+                                Number(event.target.value)
+                              )
+                            }
+                            className="mt-3 w-full accent-pine"
+                          />
+                        </label>
+                      ) : (
+                        <div className="grid grid-cols-2 gap-3">
+                          <label className="block">
+                            <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                              Width
+                            </span>
+                            <input
+                              type="range"
+                              min="16"
+                              max="92"
+                              value={selectedBed.width}
+                              onChange={(event) =>
+                                updateSelectedBedSize(
+                                  "width",
+                                  Number(event.target.value)
+                                )
+                              }
+                              className="mt-3 w-full accent-pine"
+                            />
+                          </label>
+                          <label className="block">
+                            <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                              Depth
+                            </span>
+                            <input
+                              type="range"
+                              min="16"
+                              max="78"
+                              value={selectedBed.height}
+                              onChange={(event) =>
+                                updateSelectedBedSize(
+                                  "height",
+                                  Number(event.target.value)
+                                )
+                              }
+                              className="mt-3 w-full accent-pine"
+                            />
+                          </label>
+                        </div>
+                      )}
 
-              {selectedPlantId === CUSTOM_PLANT_VALUE ? (
-                <label className="block">
-                  <span className="mb-2 block text-sm font-semibold text-slate-800">
-                    Custom name
-                  </span>
-                  <input
-                    type="text"
-                    value={customPlantName}
-                    onChange={(event) => setCustomPlantName(event.target.value)}
-                    className="field-shell min-h-12 rounded-2xl"
-                    placeholder="Mystery pepper"
-                  />
-                </label>
-              ) : null}
-
-              <div className="rounded-[1.25rem] border border-slate-200 bg-white/75 px-4 py-3 text-sm text-slate-700">
-                <p className="font-semibold text-slate-900">
-                  Selected:{" "}
-                  {selectedPlant?.name ??
-                    (customPlantName.trim() || "Custom plant")}
-                </p>
-                <p className="mt-1">
-                  Bed: {selectedBed?.nickname ?? "No bed selected"}
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {selectedBed && selectedBed.plantings.length > 0 ? (
-            <section className="surface-card px-5 py-5">
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
-                In This Bed
-              </p>
-              <div className="mt-4 divide-y divide-slate-200">
-                {selectedBed.plantings.map((planting) => {
-                  const plant = getPlantingPlant(planting);
-                  const label = getPlantingLabel(planting);
-
-                  return (
-                    <div
-                      key={planting.id}
-                      className="flex items-center justify-between gap-3 py-3"
-                    >
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-slate-900">
-                          {label}
-                        </p>
-                        <p className="text-xs text-slate-500">
-                          {plant ? "Database plant" : "Custom plant"}
-                        </p>
-                      </div>
-                      <div className="flex shrink-0 items-center gap-2">
-                        {plant ? (
+                      {selectedBed.shape === "custom" ? (
+                        <div className="flex gap-2 sm:col-span-2">
                           <button
                             type="button"
-                            onClick={() => navigate(`/plant/${plant.id}`)}
-                            className="text-sm font-semibold text-pine"
+                            onClick={addCustomPoint}
+                            className="flex-1 rounded-2xl bg-pine px-3 py-2 text-sm font-semibold text-white hover:bg-pine/90 focus:outline-none focus:ring-2 focus:ring-pine/35"
                           >
-                            Details
+                            Add Point
+                          </button>
+                          <button
+                            type="button"
+                            onClick={removeCustomPoint}
+                            className="flex-1 rounded-2xl bg-clay px-3 py-2 text-sm font-semibold text-white hover:bg-clay/90 focus:outline-none focus:ring-2 focus:ring-clay/35"
+                          >
+                            Delete Point
+                          </button>
+                          <button
+                            type="button"
+                            onClick={resetCustomPoints}
+                            className="flex-1 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-moss/40"
+                          >
+                            Reset
+                          </button>
+                        </div>
+                      ) : null}
+
+                      <button
+                        type="button"
+                        onClick={deleteSelectedBed}
+                        className="rounded-2xl border border-clay/30 bg-white px-3 py-3 text-sm font-semibold text-clay hover:bg-clay/5 sm:col-span-2"
+                      >
+                        Delete Bed
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+                    <label className="block">
+                      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                        Search database
+                      </span>
+                      <div className="relative">
+                        <input
+                          type="search"
+                          value={plantQuery}
+                          onChange={(event) =>
+                            setPlantQuery(event.target.value)
+                          }
+                          className="field-shell min-h-11 rounded-2xl py-2 pr-12 text-sm"
+                          placeholder="Tomato, basil, marigold..."
+                        />
+                        {plantQuery ? (
+                          <button
+                            type="button"
+                            onClick={clearPlantSearch}
+                            className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-slate-100 text-sm font-black text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-pine/35"
+                            aria-label="Clear plant search"
+                            title="Clear search"
+                          >
+                            x
                           </button>
                         ) : null}
-                        <button
-                          type="button"
-                          onClick={() =>
-                            removePlanting(selectedBed.id, planting.id)
-                          }
-                          className="text-sm font-semibold text-clay"
-                        >
-                          Remove
-                        </button>
                       </div>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedPlantId(CUSTOM_PLANT_VALUE)}
+                      className={
+                        selectedPlantId === CUSTOM_PLANT_VALUE
+                          ? "action-button-primary self-end"
+                          : "action-button-secondary self-end"
+                      }
+                    >
+                      Custom
+                    </button>
+                  </div>
+
+                  <div className="flex gap-2 overflow-x-auto pb-1">
+                    {matchingPlants.map((plant) => (
+                      <button
+                        key={`editor-plant-${plant.id}`}
+                        type="button"
+                        onClick={() => {
+                          setSelectedPlantId(plant.id);
+                          setPlantQuery(plant.name);
+                        }}
+                        className={
+                          selectedPlantId === plant.id
+                            ? "min-w-36 rounded-2xl border border-pine bg-pine px-4 py-3 text-left text-sm font-semibold text-white"
+                            : "min-w-36 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-800 hover:border-moss/40"
+                        }
+                      >
+                        <span className="block truncate">{plant.name}</span>
+                        <span
+                          className={
+                            selectedPlantId === plant.id
+                              ? "mt-1 block text-xs capitalize text-white/75"
+                              : "mt-1 block text-xs capitalize text-slate-500"
+                          }
+                        >
+                          {plant.category}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {selectedPlantId === CUSTOM_PLANT_VALUE ? (
+                    <label className="block">
+                      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                        Custom name
+                      </span>
+                      <input
+                        type="text"
+                        value={customPlantName}
+                        onChange={(event) =>
+                          setCustomPlantName(event.target.value)
+                        }
+                        className="field-shell min-h-11 rounded-2xl py-2 text-sm"
+                        placeholder="Mystery pepper"
+                      />
+                    </label>
+                  ) : null}
+
+                  {selectedPlanting && selectedPlantingBed ? (
+                    <div className="flex flex-col gap-2 rounded-[1.25rem] border border-clay/25 bg-clay/5 p-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-slate-900">
+                          Selected: {selectedPlantingLabel}
+                        </p>
+                        <p className="mt-1 text-xs text-slate-600">
+                          In {selectedPlantingBed.nickname}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          removePlanting(
+                            selectedPlantingBed.id,
+                            selectedPlanting.id
+                          )
+                        }
+                        className="rounded-2xl bg-clay px-4 py-3 text-sm font-semibold text-white hover:bg-clay/90 focus:outline-none focus:ring-2 focus:ring-clay/35"
+                      >
+                        Delete Plant
+                      </button>
                     </div>
-                  );
-                })}
-              </div>
-            </section>
+                  ) : null}
+                </div>
+              )}
+            </div>
           ) : null}
-        </aside>
+        </section>
       </div>
     </div>
   );
