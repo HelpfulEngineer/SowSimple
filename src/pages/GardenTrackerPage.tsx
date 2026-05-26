@@ -117,9 +117,10 @@ type BoardPanState = {
   pointerId: number;
   startClientX: number;
   startClientY: number;
-  startScrollLeft: number;
-  startScrollTop: number;
+  startPanX: number;
+  startPanY: number;
   point: { x: number; y: number };
+  canAddBed: boolean;
   moved: boolean;
 };
 
@@ -133,6 +134,11 @@ type DragState =
 type PlantingSelection = {
   bedId: string;
   plantingId: string;
+};
+
+type MapPan = {
+  x: number;
+  y: number;
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -300,6 +306,7 @@ export function GardenTrackerPage() {
   );
   const [customPlantName, setCustomPlantName] = useState("Custom plant");
   const [mapZoom, setMapZoom] = useState(1);
+  const [mapPan, setMapPan] = useState<MapPan>({ x: 0, y: 0 });
   const [selectedPlantingTarget, setSelectedPlantingTarget] =
     useState<PlantingSelection | null>(null);
   const [dragState, setDragState] = useState<DragState | null>(null);
@@ -338,8 +345,43 @@ export function GardenTrackerPage() {
   );
   const mapZoomPercent = Math.round(mapZoom * 100);
   const boardStyle = {
-    "--garden-zoom": String(mapZoom)
+    transform: `translate3d(${mapPan.x}px, ${mapPan.y}px, 0) scale(${mapZoom})`
   } as CSSProperties;
+
+  function getClampedMapPan(pan: MapPan, zoom: number): MapPan {
+    const viewport = boardViewportRef.current;
+    const board = boardRef.current;
+    if (!viewport || !board) return pan;
+
+    const viewportRect = viewport.getBoundingClientRect();
+    const minX = Math.min(0, viewportRect.width - board.offsetWidth * zoom);
+    const minY = Math.min(0, viewportRect.height - board.offsetHeight * zoom);
+
+    return {
+      x: clamp(pan.x, minX, 0),
+      y: clamp(pan.y, minY, 0)
+    };
+  }
+
+  function getViewportPoint(clientX: number, clientY: number): MapPan {
+    const viewportRect = boardViewportRef.current?.getBoundingClientRect();
+    if (!viewportRect) return { x: 0, y: 0 };
+
+    return {
+      x: clientX - viewportRect.left,
+      y: clientY - viewportRect.top
+    };
+  }
+
+  function getViewportCenterPoint(): MapPan {
+    const viewportRect = boardViewportRef.current?.getBoundingClientRect();
+    if (!viewportRect) return { x: 0, y: 0 };
+
+    return {
+      x: viewportRect.width / 2,
+      y: viewportRect.height / 2
+    };
+  }
 
   useEffect(() => {
     setStoredGardenTrackerState(gardenState);
@@ -370,6 +412,20 @@ export function GardenTrackerPage() {
       document.body.style.overflow = originalOverflow;
     };
   }, [isEditorOpen]);
+
+  useEffect(() => {
+    setMapPan((currentPan) => getClampedMapPan(currentPan, mapZoom));
+
+    function handleResize() {
+      setMapPan((currentPan) => getClampedMapPan(currentPan, mapZoom));
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [mapZoom]);
 
   useEffect(() => {
     const deleteTargetBedId = selectedBed?.id;
@@ -421,7 +477,7 @@ export function GardenTrackerPage() {
     setDragState(null);
     setSelectedPlantingTarget(null);
     setMapZoom(1);
-    boardViewportRef.current?.scrollTo({ left: 0, top: 0 });
+    setMapPan({ x: 0, y: 0 });
     setEditorOpen(false);
   }
 
@@ -453,12 +509,8 @@ export function GardenTrackerPage() {
   }
 
   function handleBoardPointerDown(event: PointerEvent<HTMLDivElement>) {
-    if (!isEditorOpen) {
-      return;
-    }
-
     if (activeEditorPointersRef.current.size >= 2 || isPinchZooming()) return;
-    if (event.target !== event.currentTarget) return;
+    if (isEditorOpen && event.target !== event.currentTarget) return;
 
     const point = getPointerPercent(event, event.currentTarget);
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -467,9 +519,10 @@ export function GardenTrackerPage() {
       pointerId: event.pointerId,
       startClientX: event.clientX,
       startClientY: event.clientY,
-      startScrollLeft: boardViewportRef.current?.scrollLeft ?? 0,
-      startScrollTop: boardViewportRef.current?.scrollTop ?? 0,
+      startPanX: mapPan.x,
+      startPanY: mapPan.y,
       point,
+      canAddBed: isEditorOpen && mode === "beds",
       moved: false
     });
   }
@@ -478,7 +531,6 @@ export function GardenTrackerPage() {
     if (
       dragState?.kind !== "board-pan" ||
       dragState.pointerId !== event.pointerId ||
-      !boardViewportRef.current ||
       isPinchZooming()
     ) {
       return;
@@ -490,8 +542,15 @@ export function GardenTrackerPage() {
       dragState.moved || Math.abs(deltaX) > 6 || Math.abs(deltaY) > 6;
 
     if (moved) {
-      boardViewportRef.current.scrollLeft = dragState.startScrollLeft - deltaX;
-      boardViewportRef.current.scrollTop = dragState.startScrollTop - deltaY;
+      setMapPan(
+        getClampedMapPan(
+          {
+            x: dragState.startPanX + deltaX,
+            y: dragState.startPanY + deltaY
+          },
+          mapZoom
+        )
+      );
     }
 
     setDragState({ ...dragState, moved });
@@ -507,7 +566,7 @@ export function GardenTrackerPage() {
 
     event.currentTarget.releasePointerCapture(event.pointerId);
 
-    if (!dragState.moved && mode === "beds") {
+    if (!dragState.moved && dragState.canAddBed) {
       const size = DEFAULT_BED_SIZES[selectedShape];
       addBedAt(
         dragState.point.x - size.width / 2,
@@ -684,18 +743,29 @@ export function GardenTrackerPage() {
     setPlantQuery("");
   }
 
-  function updateMapZoom(value: number) {
-    setMapZoom(clamp(value, MIN_MAP_ZOOM, MAX_MAP_ZOOM));
+  function updateMapZoom(value: number, focalPoint = getViewportCenterPoint()) {
+    setMapZoom((currentZoom) => {
+      const nextZoom = clamp(value, MIN_MAP_ZOOM, MAX_MAP_ZOOM);
+
+      setMapPan((currentPan) => {
+        const worldX = (focalPoint.x - currentPan.x) / currentZoom;
+        const worldY = (focalPoint.y - currentPan.y) / currentZoom;
+
+        return getClampedMapPan(
+          {
+            x: focalPoint.x - worldX * nextZoom,
+            y: focalPoint.y - worldY * nextZoom
+          },
+          nextZoom
+        );
+      });
+
+      return nextZoom;
+    });
   }
 
   function nudgeMapZoom(delta: number) {
-    setMapZoom((currentZoom) =>
-      clamp(
-        Number((currentZoom + delta).toFixed(2)),
-        MIN_MAP_ZOOM,
-        MAX_MAP_ZOOM
-      )
-    );
+    updateMapZoom(Number((mapZoom + delta).toFixed(2)));
   }
 
   function handleEditorPointerDownCapture(event: PointerEvent<HTMLDivElement>) {
@@ -739,11 +809,16 @@ export function GardenTrackerPage() {
         activeEditorPointersRef.current.values()
       );
       const nextDistance = getPointDistance(first, second);
+      const focalPoint = getViewportPoint(
+        (first.x + second.x) / 2,
+        (first.y + second.y) / 2
+      );
 
       if (pinchStateRef.current.startDistance > 0) {
         updateMapZoom(
           (pinchStateRef.current.startZoom * nextDistance) /
-            pinchStateRef.current.startDistance
+            pinchStateRef.current.startDistance,
+          focalPoint
         );
       }
     }
@@ -780,11 +855,11 @@ export function GardenTrackerPage() {
     event: PointerEvent<HTMLDivElement>,
     bed: GardenBed
   ) {
-    event.stopPropagation();
     if (!isEditorOpen) {
       return;
     }
 
+    event.stopPropagation();
     if (activeEditorPointersRef.current.size >= 2 || isPinchZooming()) return;
     setSelectedBedId(bed.id);
 
