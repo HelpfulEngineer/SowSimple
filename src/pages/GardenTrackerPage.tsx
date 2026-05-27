@@ -3,11 +3,19 @@ import {
   useMemo,
   useRef,
   useState,
+  type ChangeEvent,
   type CSSProperties,
   type PointerEvent
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { plants, getPlantById } from "../data/plants";
+import {
+  createGardenTransferCode,
+  createGardenTransferLink,
+  getGardenTransferSummary,
+  mergeGardenTrackerStates,
+  parseGardenTransferInput
+} from "../lib/gardenTransfer";
 import {
   getStoredGardenTrackerState,
   setStoredGardenTrackerState
@@ -62,6 +70,7 @@ const categoryMarkerClasses = {
 } as const;
 
 type GardenMode = "beds" | "plants";
+type TransferMode = "export" | "import";
 
 type BedDragState = {
   kind: "bed";
@@ -284,8 +293,11 @@ function updatePlantingInState(
 
 export function GardenTrackerPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const boardRef = useRef<HTMLDivElement | null>(null);
   const boardViewportRef = useRef<HTMLDivElement | null>(null);
+  const transferCodeFieldRef = useRef<HTMLTextAreaElement | null>(null);
+  const transferLinkFieldRef = useRef<HTMLInputElement | null>(null);
   const activeEditorPointersRef = useRef(
     new Map<number, { x: number; y: number }>()
   );
@@ -307,6 +319,10 @@ export function GardenTrackerPage() {
   const [customPlantName, setCustomPlantName] = useState("Custom plant");
   const [mapZoom, setMapZoom] = useState(1);
   const [mapPan, setMapPan] = useState<MapPan>({ x: 0, y: 0 });
+  const [isTransferOpen, setTransferOpen] = useState(false);
+  const [transferMode, setTransferMode] = useState<TransferMode>("export");
+  const [transferStatus, setTransferStatus] = useState("");
+  const [importDraft, setImportDraft] = useState("");
   const [selectedPlantingTarget, setSelectedPlantingTarget] =
     useState<PlantingSelection | null>(null);
   const [dragState, setDragState] = useState<DragState | null>(null);
@@ -342,6 +358,33 @@ export function GardenTrackerPage() {
   const plantedCount = gardenState.beds.reduce(
     (total, bed) => total + bed.plantings.length,
     0
+  );
+  const transferExportedAt = useMemo(() => new Date().toISOString(), [
+    gardenState
+  ]);
+  const transferCode = useMemo(
+    () => createGardenTransferCode(gardenState, transferExportedAt),
+    [gardenState, transferExportedAt]
+  );
+  const transferSummary = useMemo(
+    () => getGardenTransferSummary(gardenState, transferExportedAt),
+    [gardenState, transferExportedAt]
+  );
+  const transferLink = useMemo(() => {
+    if (typeof window === "undefined") return "";
+
+    return createGardenTransferLink(
+      transferCode,
+      window.location.origin,
+      window.location.pathname
+    );
+  }, [transferCode]);
+  const parsedTransfer = useMemo(
+    () =>
+      importDraft.trim().length > 0
+        ? parseGardenTransferInput(importDraft)
+        : null,
+    [importDraft]
   );
   const mapZoomPercent = Math.round(mapZoom * 100);
   const boardStyle = {
@@ -386,6 +429,17 @@ export function GardenTrackerPage() {
   useEffect(() => {
     setStoredGardenTrackerState(gardenState);
   }, [gardenState]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const transferCodeParam = params.get("garden");
+    if (!transferCodeParam) return;
+
+    setImportDraft(transferCodeParam);
+    setTransferMode("import");
+    setTransferStatus("Review this garden before importing.");
+    setTransferOpen(true);
+  }, [location.search]);
 
   useEffect(() => {
     if (!selectedPlantingTarget) return;
@@ -741,6 +795,183 @@ export function GardenTrackerPage() {
 
   function clearPlantSearch() {
     setPlantQuery("");
+  }
+
+  function copyTextWithHiddenTextarea(text: string): boolean {
+    const textarea = document.createElement("textarea");
+    const selection = document.getSelection();
+    const selectedRange =
+      selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+
+    textarea.value = text;
+    textarea.setAttribute("readonly", "true");
+    textarea.style.position = "fixed";
+    textarea.style.left = "0";
+    textarea.style.top = "0";
+    textarea.style.opacity = "0";
+    textarea.style.pointerEvents = "none";
+    document.body.appendChild(textarea);
+    textarea.focus({ preventScroll: true });
+    textarea.select();
+    textarea.setSelectionRange(0, text.length);
+
+    try {
+      return document.execCommand("copy");
+    } catch {
+      return false;
+    } finally {
+      textarea.remove();
+      if (selection && selectedRange) {
+        selection.removeAllRanges();
+        selection.addRange(selectedRange);
+      }
+    }
+  }
+
+  function selectTransferTextField(
+    field: HTMLInputElement | HTMLTextAreaElement | null | undefined
+  ) {
+    if (!field) return false;
+
+    field.focus({ preventScroll: true });
+    field.select();
+    field.setSelectionRange(0, field.value.length);
+    return true;
+  }
+
+  async function copyTransferText(
+    text: string,
+    label: string,
+    fallbackField?: HTMLInputElement | HTMLTextAreaElement | null
+  ) {
+    let copied = false;
+
+    if (navigator.clipboard?.writeText && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+        copied = true;
+      } catch {
+        copied = false;
+      }
+    }
+
+    if (!copied) {
+      copied = copyTextWithHiddenTextarea(text);
+    }
+
+    if (copied) {
+      setTransferStatus(`${label} copied.`);
+      return;
+    }
+
+    if (selectTransferTextField(fallbackField)) {
+      setTransferStatus(`${label} selected. Press Ctrl+C or long-press to copy.`);
+      return;
+    }
+
+    setTransferStatus("Copy failed. Select the transfer text manually.");
+  }
+
+  async function shareGardenTransfer() {
+    if (navigator.share && transferLink) {
+      try {
+        await navigator.share({
+          title: "Sow Simple Garden",
+          text: "Import this Sow Simple garden.",
+          url: transferLink
+        });
+        setTransferStatus("Share sheet opened.");
+        return;
+      } catch {
+        // Fall back to copying the link.
+      }
+    }
+
+    await copyTransferText(transferLink, "Share link", transferLinkFieldRef.current);
+  }
+
+  function downloadGardenTransferFile() {
+    const file = new Blob(
+      [
+        JSON.stringify(
+          {
+            app: "SowSimple",
+            kind: "garden-transfer-code",
+            exportedAt: transferExportedAt,
+            code: transferCode
+          },
+          null,
+          2
+        )
+      ],
+      { type: "application/json" }
+    );
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(file);
+    link.download = `sow-simple-garden-${transferExportedAt.slice(
+      0,
+      10
+    )}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(link.href);
+    setTransferStatus("Garden file downloaded.");
+  }
+
+  async function handleImportFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      let nextDraft = text;
+
+      try {
+        const parsed = JSON.parse(text) as { code?: unknown };
+        if (typeof parsed.code === "string") {
+          nextDraft = parsed.code;
+        }
+      } catch {
+        // Plain text transfer files are supported too.
+      }
+
+      setImportDraft(nextDraft);
+      setTransferMode("import");
+      setTransferStatus(`${file.name} loaded.`);
+    } catch {
+      setTransferStatus("That file could not be read.");
+    } finally {
+      event.currentTarget.value = "";
+    }
+  }
+
+  function applyGardenTransfer(strategy: "replace" | "merge") {
+    if (!parsedTransfer?.ok) {
+      setTransferStatus("Preview a valid garden transfer first.");
+      return;
+    }
+
+    const nextState =
+      strategy === "replace"
+        ? parsedTransfer.state
+        : mergeGardenTrackerStates(
+            gardenState,
+            parsedTransfer.state,
+            makeId("import")
+          );
+
+    setGardenState(nextState);
+    setSelectedPlantingTarget(null);
+    setDragState(null);
+    setEditorOpen(false);
+    setTransferStatus(
+      `${parsedTransfer.summary.bedCount} bed${
+        parsedTransfer.summary.bedCount === 1 ? "" : "s"
+      } imported.`
+    );
+    setTransferMode("export");
   }
 
   function updateMapZoom(value: number, focalPoint = getViewportCenterPoint()) {
@@ -1179,26 +1410,39 @@ export function GardenTrackerPage() {
   return (
     <div className="space-y-7 pb-6">
       <section className="surface-card px-5 py-6 sm:px-7 sm:py-7">
-        <div className="space-y-3">
-          <span className="label-chip bg-pine text-white">
-            Garden Tracker
-          </span>
-          <h2 className="font-display text-3xl text-slate-900 sm:text-4xl">
-            Map each bed, nickname it, and place what you planted.
-          </h2>
-          <div className="flex flex-wrap gap-3 text-sm text-slate-700">
-            <span className="label-chip bg-slate-900/6 text-slate-700">
-              Beds: {gardenState.beds.length}
+        <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-start">
+          <div className="space-y-3">
+            <span className="label-chip bg-pine text-white">
+              Garden Tracker
             </span>
-            <span className="label-chip bg-slate-900/6 text-slate-700">
-              Plantings: {plantedCount}
-            </span>
-            {selectedBed ? (
-              <span className="label-chip bg-clay/10 text-clay">
-                Active: {selectedBed.nickname}
+            <h2 className="font-display text-3xl text-slate-900 sm:text-4xl">
+              Map each bed, nickname it, and place what you planted.
+            </h2>
+            <div className="flex flex-wrap gap-3 text-sm text-slate-700">
+              <span className="label-chip bg-slate-900/6 text-slate-700">
+                Beds: {gardenState.beds.length}
               </span>
-            ) : null}
+              <span className="label-chip bg-slate-900/6 text-slate-700">
+                Plantings: {plantedCount}
+              </span>
+              {selectedBed ? (
+                <span className="label-chip bg-clay/10 text-clay">
+                  Active: {selectedBed.nickname}
+                </span>
+              ) : null}
+            </div>
           </div>
+          <button
+            type="button"
+            onClick={() => {
+              setTransferMode("export");
+              setTransferStatus("");
+              setTransferOpen(true);
+            }}
+            className="action-button-primary justify-self-start lg:justify-self-end"
+          >
+            Transfer Garden
+          </button>
         </div>
       </section>
 
@@ -1749,6 +1993,243 @@ export function GardenTrackerPage() {
           ) : null}
         </section>
       </div>
+
+      {isTransferOpen ? (
+        <div
+          className="fixed inset-0 z-[60] overflow-y-auto bg-slate-950/45 px-4 py-6 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="garden-transfer-title"
+        >
+          <div className="mx-auto max-w-3xl rounded-[1.5rem] border border-slate-200 bg-white shadow-soft">
+            <div className="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
+                  Garden Transfer
+                </p>
+                <h3
+                  id="garden-transfer-title"
+                  className="mt-1 font-display text-2xl text-slate-900"
+                >
+                  Move this garden without an account.
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setTransferOpen(false)}
+                className="action-button-secondary self-start px-4 py-2"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="p-5">
+              <div className="inline-flex rounded-full border border-slate-200 bg-white/90 p-1">
+                <button
+                  type="button"
+                  onClick={() => setTransferMode("export")}
+                  className={
+                    transferMode === "export"
+                      ? "action-button bg-pine px-4 py-2 text-white hover:bg-pine/90"
+                      : "action-button bg-transparent px-4 py-2 text-slate-700 hover:bg-slate-100"
+                  }
+                  aria-pressed={transferMode === "export"}
+                >
+                  Export
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTransferMode("import")}
+                  className={
+                    transferMode === "import"
+                      ? "action-button bg-pine px-4 py-2 text-white hover:bg-pine/90"
+                      : "action-button bg-transparent px-4 py-2 text-slate-700 hover:bg-slate-100"
+                  }
+                  aria-pressed={transferMode === "import"}
+                >
+                  Import
+                </button>
+              </div>
+
+              {transferMode === "export" ? (
+                <div className="mt-5 space-y-4">
+                  <div className="flex flex-wrap gap-2">
+                    <span className="label-chip bg-slate-900/6 text-slate-700">
+                      Beds: {transferSummary.bedCount}
+                    </span>
+                    <span className="label-chip bg-slate-900/6 text-slate-700">
+                      Plantings: {transferSummary.plantingCount}
+                    </span>
+                    <span className="label-chip bg-moss/10 text-pine">
+                      SOW1
+                    </span>
+                  </div>
+
+                  <label className="block">
+                    <span className="mb-2 block text-sm font-semibold text-slate-800">
+                      Transfer code
+                    </span>
+                    <textarea
+                      ref={transferCodeFieldRef}
+                      value={transferCode}
+                      readOnly
+                      onFocus={(event) => event.currentTarget.select()}
+                      className="field-shell min-h-40 resize-y rounded-2xl font-mono text-xs leading-5"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-2 block text-sm font-semibold text-slate-800">
+                      Share link
+                    </span>
+                    <input
+                      ref={transferLinkFieldRef}
+                      type="text"
+                      value={transferLink}
+                      readOnly
+                      onFocus={(event) => event.currentTarget.select()}
+                      className="field-shell min-h-12 rounded-2xl font-mono text-xs"
+                    />
+                  </label>
+
+                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        copyTransferText(
+                          transferCode,
+                          "Code",
+                          transferCodeFieldRef.current
+                        )
+                      }
+                      className="action-button-primary"
+                    >
+                      Copy Code
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        copyTransferText(
+                          transferLink,
+                          "Link",
+                          transferLinkFieldRef.current
+                        )
+                      }
+                      className="action-button-secondary"
+                    >
+                      Copy Link
+                    </button>
+                    <button
+                      type="button"
+                      onClick={shareGardenTransfer}
+                      className="action-button-secondary"
+                    >
+                      Share
+                    </button>
+                    <button
+                      type="button"
+                      onClick={downloadGardenTransferFile}
+                      className="action-button-secondary"
+                    >
+                      Download
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-5 space-y-4">
+                  <label className="block">
+                    <span className="mb-2 block text-sm font-semibold text-slate-800">
+                      Import code or link
+                    </span>
+                    <textarea
+                      value={importDraft}
+                      onChange={(event) => {
+                        setImportDraft(event.target.value);
+                        setTransferStatus("");
+                      }}
+                      className="field-shell min-h-40 resize-y rounded-2xl font-mono text-xs leading-5"
+                      placeholder="SOW1:..."
+                    />
+                  </label>
+
+                  <div className="flex flex-wrap gap-2">
+                    <label className="action-button-secondary cursor-pointer">
+                      Upload File
+                      <input
+                        type="file"
+                        accept=".json,.txt,text/plain,application/json"
+                        onChange={handleImportFile}
+                        className="sr-only"
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImportDraft("");
+                        setTransferStatus("");
+                      }}
+                      className="action-button-secondary"
+                    >
+                      Clear
+                    </button>
+                  </div>
+
+                  {parsedTransfer ? (
+                    parsedTransfer.ok ? (
+                      <div className="rounded-[1.25rem] border border-moss/25 bg-moss/10 p-4">
+                        <div className="flex flex-wrap gap-2">
+                          <span className="label-chip bg-white text-slate-700">
+                            Beds: {parsedTransfer.summary.bedCount}
+                          </span>
+                          <span className="label-chip bg-white text-slate-700">
+                            Plantings: {parsedTransfer.summary.plantingCount}
+                          </span>
+                        </div>
+                        {parsedTransfer.summary.bedNames.length > 0 ? (
+                          <p className="mt-3 text-sm text-slate-700">
+                            {parsedTransfer.summary.bedNames
+                              .slice(0, 4)
+                              .join(", ")}
+                            {parsedTransfer.summary.bedNames.length > 4
+                              ? ", ..."
+                              : ""}
+                          </p>
+                        ) : null}
+                        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                          <button
+                            type="button"
+                            onClick={() => applyGardenTransfer("replace")}
+                            className="action-button-primary"
+                          >
+                            Replace Current
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => applyGardenTransfer("merge")}
+                            className="action-button-secondary"
+                          >
+                            Merge Into Current
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="rounded-[1.25rem] border border-clay/25 bg-clay/5 p-4 text-sm font-semibold text-clay">
+                        {parsedTransfer.message}
+                      </div>
+                    )
+                  ) : null}
+                </div>
+              )}
+
+              {transferStatus ? (
+                <p className="mt-4 rounded-full bg-slate-900/6 px-4 py-2 text-sm font-semibold text-slate-700">
+                  {transferStatus}
+                </p>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

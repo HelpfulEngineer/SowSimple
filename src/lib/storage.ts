@@ -234,25 +234,35 @@ export function setStoredHomePageState(state: HomePageState): void {
   }
 }
 
+export function normalizeGardenTrackerState(
+  value: unknown
+): GardenTrackerState {
+  if (!value || typeof value !== "object") {
+    return { beds: [], selectedBedId: null };
+  }
+
+  const partial = value as Partial<GardenTrackerState>;
+  const beds = Array.isArray(partial.beds)
+    ? partial.beds.flatMap((bed, index) => {
+        const normalized = normalizeGardenBed(bed, index);
+        return normalized ? [normalized] : [];
+      })
+    : [];
+  const selectedBedId =
+    typeof partial.selectedBedId === "string" &&
+    beds.some((bed) => bed.id === partial.selectedBedId)
+      ? partial.selectedBedId
+      : beds[0]?.id ?? null;
+
+  return { beds, selectedBedId };
+}
+
 export function getStoredGardenTrackerState(): GardenTrackerState {
   try {
     const raw = localStorage.getItem(GARDEN_TRACKER_KEY);
     if (!raw) return { beds: [], selectedBedId: null };
 
-    const parsed = JSON.parse(raw) as Partial<GardenTrackerState>;
-    const beds = Array.isArray(parsed.beds)
-      ? parsed.beds.flatMap((bed, index) => {
-          const normalized = normalizeGardenBed(bed, index);
-          return normalized ? [normalized] : [];
-        })
-      : [];
-    const selectedBedId =
-      typeof parsed.selectedBedId === "string" &&
-      beds.some((bed) => bed.id === parsed.selectedBedId)
-        ? parsed.selectedBedId
-        : beds[0]?.id ?? null;
-
-    return { beds, selectedBedId };
+    return normalizeGardenTrackerState(JSON.parse(raw));
   } catch {
     return { beds: [], selectedBedId: null };
   }
